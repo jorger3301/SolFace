@@ -1,0 +1,87 @@
+{
+  "name": "solfaces",
+  "version": "1.0.0",
+  "description": "Deterministic wallet avatars for the Solana ecosystem. Zero-dependency trait engine with React, vanilla JS, and server-side rendering support.",
+  "author": "https://github.com/jorger3301",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jorger3301/solfaces"
+  },
+  "homepage": "https://solfaces.dev",
+  "keywords": [
+    "solana",
+    "avatar",
+    "wallet",
+    "identity",
+    "profile",
+    "pfp",
+    "generative",
+    "deterministic",
+    "svg",
+    "react",
+    "web3",
+    "defi",
+    "ai-agent"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs",
+      "types": "./dist/react/index.d.ts"
+    },
+    "./vanilla": {
+      "import": "./dist/vanilla/index.js",
+      "require": "./dist/vanilla/index.cjs",
+      "types": "./dist/vanilla/index.d.ts"
+    },
+    "./themes": {
+      "import": "./dist/themes/index.js",
+      "require": "./dist/themes/index.cjs",
+      "types": "./dist/themes/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "require": "./dist/core/index.cjs",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./cdn": "./dist/solfaces.cdn.js"
+  },
+  "files": [
+    "dist",
+    "python",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "sideEffects": false
+}
