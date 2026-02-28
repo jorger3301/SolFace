@@ -40,3 +40,7 @@ export {
   PRESET_THEMES,
   getPresetTheme,
 } from "./themes/presets";
+
+// Agent tools
+export { SOLFACE_TOOLS, handleToolCall } from "./agent";
+export type { SolFaceTool } from "./agent";

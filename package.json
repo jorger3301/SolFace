@@ -22,7 +22,10 @@
     "react",
     "web3",
     "defi",
-    "ai-agent"
+    "ai-agent",
+    "mcp",
+    "tool-use",
+    "function-calling"
   ],
   "type": "module",
   "main": "./dist/index.cjs",
@@ -54,7 +57,15 @@
       "import": "./dist/core/index.js",
       "require": "./dist/core/index.cjs"
     },
+    "./agent": {
+      "types": "./dist/agent/index.d.ts",
+      "import": "./dist/agent/index.js",
+      "require": "./dist/agent/index.cjs"
+    },
     "./cdn": "./dist/solfaces.cdn.global.js"
+  },
+  "bin": {
+    "solfaces-mcp": "./dist/agent/mcp-server.cjs"
   },
   "files": [
     "dist",
