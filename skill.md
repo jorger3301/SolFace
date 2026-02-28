@@ -144,9 +144,20 @@ import { darkTheme } from "solfaces/themes";
 interface SolFaceProps {
   walletAddress: string;           // Required
   size?: number;                   // Default: 64
-  enableBlink?: boolean;           // Default: false
+  enableBlink?: boolean | { duration?: number; delay?: number }; // Blink animation
   theme?: SolFaceTheme;            // Optional theme object
   traitOverrides?: Partial<SolFaceTraits>;  // Pin specific traits
+  colorOverrides?: {               // Override individual colors per instance
+    skin?: string;
+    eyes?: string;
+    hair?: string;
+    bg?: string;
+    mouth?: string;
+    eyebrow?: string;
+    accessory?: string;
+    nose?: string;
+    eyeWhite?: string;
+  };
   className?: string;
   style?: React.CSSProperties;
   // ...all SVG element props
@@ -258,6 +269,8 @@ const brandTheme: SolFaceTheme = {
   mouthColor: "#e06070",
   eyebrowColor: "#aaa",
   accessoryColor: "#888",
+  eyeWhiteColor: "#e0e0e0",  // Sclera + teeth color (important for dark themes)
+  noseColor: "#c68642aa",     // Nose color (defaults to skin + transparency)
 
   // Layout
   bgOpacity: 1,          // 0-1, background fill opacity
@@ -276,7 +289,9 @@ const brandTheme: SolFaceTheme = {
 | `bgColors` | `string[]` | Background fill colors (5 variants) |
 | `mouthColor` | `string` | Mouth stroke/fill color |
 | `eyebrowColor` | `string` | Eyebrow stroke color |
-| `accessoryColor` | `string` | Glasses/accessory stroke color |
+| `accessoryColor` | `string` | Glasses/earring/bandana color |
+| `eyeWhiteColor` | `string` | Sclera (eye white) and teeth color — set for dark themes |
+| `noseColor` | `string` | Nose color (defaults to skin + transparency) |
 | `bgOpacity` | `number` | Background opacity (0-1) |
 | `bgRadius` | `number` | SVG rect border radius |
 | `border` | `{ color, width }` | Optional border around avatar |

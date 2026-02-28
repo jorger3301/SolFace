@@ -14,9 +14,23 @@ import {
 export interface SolFaceProps extends Omit<SVGAttributes<SVGSVGElement>, "viewBox" | "xmlns"> {
   walletAddress: string;
   size?: number;
-  enableBlink?: boolean;
+  enableBlink?: boolean | {
+    duration?: number;
+    delay?: number;
+  };
   theme?: SolFaceTheme;
   traitOverrides?: Partial<SolFaceTraits>;
+  colorOverrides?: {
+    skin?: string;
+    eyes?: string;
+    hair?: string;
+    bg?: string;
+    mouth?: string;
+    eyebrow?: string;
+    accessory?: string;
+    nose?: string;
+    eyeWhite?: string;
+  };
 }
 
 // ─── Face Shape ─────────────────────────────────
@@ -44,16 +58,16 @@ function renderFace(traits: SolFaceTraits, skin: string) {
 
 // ─── Eyes ────────────────────────────────────────
 
-function renderEyes(traits: SolFaceTraits, eyeCol: string) {
+function renderEyes(traits: SolFaceTraits, eyeCol: string, eyeWhite: string = "white") {
   const lx = 24, rx = 40, y = 30;
 
   switch (traits.eyeStyle) {
     case 0: // Round
       return (
         <>
-          <circle cx={lx} cy={y} r="3.5" fill="white" />
+          <circle cx={lx} cy={y} r="3.5" fill={eyeWhite} />
           <circle cx={lx + 1} cy={y} r="2" fill={eyeCol} />
-          <circle cx={rx} cy={y} r="3.5" fill="white" />
+          <circle cx={rx} cy={y} r="3.5" fill={eyeWhite} />
           <circle cx={rx + 1} cy={y} r="2" fill={eyeCol} />
         </>
       );
@@ -67,29 +81,29 @@ function renderEyes(traits: SolFaceTraits, eyeCol: string) {
     case 2: // Almond
       return (
         <>
-          <ellipse cx={lx} cy={y} rx="4" ry="2.5" fill="white" />
+          <ellipse cx={lx} cy={y} rx="4" ry="2.5" fill={eyeWhite} />
           <circle cx={lx + 0.5} cy={y} r="1.5" fill={eyeCol} />
-          <ellipse cx={rx} cy={y} rx="4" ry="2.5" fill="white" />
+          <ellipse cx={rx} cy={y} rx="4" ry="2.5" fill={eyeWhite} />
           <circle cx={rx + 0.5} cy={y} r="1.5" fill={eyeCol} />
         </>
       );
     case 3: // Wide
       return (
         <>
-          <circle cx={lx} cy={y} r="4.5" fill="white" />
+          <circle cx={lx} cy={y} r="4.5" fill={eyeWhite} />
           <circle cx={lx} cy={y + 0.5} r="2.5" fill={eyeCol} />
-          <circle cx={rx} cy={y} r="4.5" fill="white" />
+          <circle cx={rx} cy={y} r="4.5" fill={eyeWhite} />
           <circle cx={rx} cy={y + 0.5} r="2.5" fill={eyeCol} />
         </>
       );
     case 4: // Sleepy
       return (
         <>
-          <ellipse cx={lx} cy={y + 1} rx="3.5" ry="2" fill="white" />
+          <ellipse cx={lx} cy={y + 1} rx="3.5" ry="2" fill={eyeWhite} />
           <circle cx={lx} cy={y + 1} r="1.5" fill={eyeCol} />
           <line x1={lx - 4} y1={y - 0.5} x2={lx + 4} y2={y - 0.5}
             stroke={eyeCol} strokeWidth="1" strokeLinecap="round" />
-          <ellipse cx={rx} cy={y + 1} rx="3.5" ry="2" fill="white" />
+          <ellipse cx={rx} cy={y + 1} rx="3.5" ry="2" fill={eyeWhite} />
           <circle cx={rx} cy={y + 1} r="1.5" fill={eyeCol} />
           <line x1={rx - 4} y1={y - 0.5} x2={rx + 4} y2={y - 0.5}
             stroke={eyeCol} strokeWidth="1" strokeLinecap="round" />
@@ -100,20 +114,20 @@ function renderEyes(traits: SolFaceTraits, eyeCol: string) {
         <>
           <path d={`M${lx - 3} ${y} Q${lx} ${y + 3} ${lx + 3} ${y}`}
             fill="none" stroke={eyeCol} strokeWidth="1.5" strokeLinecap="round" />
-          <circle cx={rx} cy={y} r="3.5" fill="white" />
+          <circle cx={rx} cy={y} r="3.5" fill={eyeWhite} />
           <circle cx={rx + 1} cy={y} r="2" fill={eyeCol} />
         </>
       );
     case 6: // Lashes
       return (
         <>
-          <circle cx={lx} cy={y} r="3" fill="white" />
+          <circle cx={lx} cy={y} r="3" fill={eyeWhite} />
           <circle cx={lx + 0.5} cy={y} r="1.5" fill={eyeCol} />
           <line x1={lx + 2} y1={y - 3} x2={lx + 3.5} y2={y - 4.5}
             stroke={eyeCol} strokeWidth="0.8" strokeLinecap="round" />
           <line x1={lx + 3} y1={y - 2} x2={lx + 4.5} y2={y - 3}
             stroke={eyeCol} strokeWidth="0.8" strokeLinecap="round" />
-          <circle cx={rx} cy={y} r="3" fill="white" />
+          <circle cx={rx} cy={y} r="3" fill={eyeWhite} />
           <circle cx={rx + 0.5} cy={y} r="1.5" fill={eyeCol} />
           <line x1={rx + 2} y1={y - 3} x2={rx + 3.5} y2={y - 4.5}
             stroke={eyeCol} strokeWidth="0.8" strokeLinecap="round" />
@@ -124,18 +138,18 @@ function renderEyes(traits: SolFaceTraits, eyeCol: string) {
     case 7: // Narrow
       return (
         <>
-          <ellipse cx={lx} cy={y} rx="4" ry="1.2" fill="white" />
+          <ellipse cx={lx} cy={y} rx="4" ry="1.2" fill={eyeWhite} />
           <ellipse cx={lx + 0.5} cy={y} rx="2" ry="1" fill={eyeCol} />
-          <ellipse cx={rx} cy={y} rx="4" ry="1.2" fill="white" />
+          <ellipse cx={rx} cy={y} rx="4" ry="1.2" fill={eyeWhite} />
           <ellipse cx={rx + 0.5} cy={y} rx="2" ry="1" fill={eyeCol} />
         </>
       );
     default:
       return (
         <>
-          <circle cx={lx} cy={y} r="3" fill="white" />
+          <circle cx={lx} cy={y} r="3" fill={eyeWhite} />
           <circle cx={lx + 1} cy={y} r="2" fill={eyeCol} />
-          <circle cx={rx} cy={y} r="3" fill="white" />
+          <circle cx={rx} cy={y} r="3" fill={eyeWhite} />
           <circle cx={rx + 1} cy={y} r="2" fill={eyeCol} />
         </>
       );
@@ -193,9 +207,9 @@ function renderEyebrows(traits: SolFaceTraits, col: string) {
 
 // ─── Nose ───────────────────────────────────────
 
-function renderNose(traits: SolFaceTraits, skin: string) {
+function renderNose(traits: SolFaceTraits, skin: string, noseCol?: string) {
   const cx = 32, y = 36;
-  const shadow = skin + "aa";
+  const shadow = noseCol ?? (skin + "aa");
 
   switch (traits.nose) {
     case 0:
@@ -223,7 +237,7 @@ function renderNose(traits: SolFaceTraits, skin: string) {
 
 // ─── Mouth ──────────────────────────────────────
 
-function renderMouth(traits: SolFaceTraits, col: string) {
+function renderMouth(traits: SolFaceTraits, col: string, teethCol: string = "white") {
   const cx = 32, y = 42;
 
   switch (traits.mouth) {
@@ -254,7 +268,7 @@ function renderMouth(traits: SolFaceTraits, col: string) {
     case 5: // Wide smile
       return (
         <path d={`M${cx - 6} ${y} Q${cx} ${y + 6} ${cx + 6} ${y}`}
-          fill="white" stroke={col} strokeWidth="1" />
+          fill={teethCol} stroke={col} strokeWidth="1" />
       );
     default:
       return (
@@ -342,13 +356,13 @@ function renderAccessory(traits: SolFaceTraits, col: string) {
       );
     case 4: // Earring
       return (
-        <circle cx="11" cy="36" r="2" fill="#f0c060" stroke="#d4a030" strokeWidth="0.5" />
+        <circle cx="11" cy="36" r="2" fill={col} stroke={col} strokeWidth="0.5" />
       );
     case 5: // Bandana
       return (
         <g>
-          <rect x="12" y="20" width="40" height="4" rx="1" fill="#f85149" />
-          <path d="M12 22 L8 26 L12 24 Z" fill="#f85149" />
+          <rect x="12" y="20" width="40" height="4" rx="1" fill={col} />
+          <path d="M12 22 L8 26 L12 24 Z" fill={col} />
         </g>
       );
     default:
@@ -364,6 +378,7 @@ export function SolFace({
   enableBlink = false,
   theme,
   traitOverrides,
+  colorOverrides,
   className,
   style,
   ...rest
@@ -378,18 +393,25 @@ export function SolFace({
   const hairColors = theme?.hairColors ?? HAIR_COLORS;
   const bgColors = theme?.bgColors ?? BG_COLORS;
 
-  const skin = skinColors[traits.skinColor % skinColors.length];
-  const eyeCol = eyeColors[traits.eyeColor % eyeColors.length];
-  const hairCol = hairColors[traits.hairColor % hairColors.length];
-  const bgCol = bgColors[traits.bgColor % bgColors.length];
+  const skin = colorOverrides?.skin ?? skinColors[traits.skinColor % skinColors.length];
+  const eyeCol = colorOverrides?.eyes ?? eyeColors[traits.eyeColor % eyeColors.length];
+  const hairCol = colorOverrides?.hair ?? hairColors[traits.hairColor % hairColors.length];
+  const bgCol = colorOverrides?.bg ?? bgColors[traits.bgColor % bgColors.length];
 
   const bgOpacity = theme?.bgOpacity ?? 0.15;
   const bgRadius = theme?.bgRadius ?? 4;
-  const mouthCol = theme?.mouthColor ?? "#c05050";
-  const browCol = theme?.eyebrowColor ?? "#2a2020";
-  const accCol = theme?.accessoryColor ?? "#444";
+  const mouthCol = colorOverrides?.mouth ?? theme?.mouthColor ?? "#c05050";
+  const browCol = colorOverrides?.eyebrow ?? theme?.eyebrowColor ?? "#2a2020";
+  const accCol = colorOverrides?.accessory ?? theme?.accessoryColor ?? "#444";
+  const eyeWhite = colorOverrides?.eyeWhite ?? theme?.eyeWhiteColor ?? "white";
+  const noseCol = colorOverrides?.nose ?? theme?.noseColor;
 
   const uid = useMemo(() => `sf-${walletAddress.slice(0, 8)}`, [walletAddress]);
+
+  const blinkEnabled = !!enableBlink;
+  const blinkDuration = typeof enableBlink === "object" ? (enableBlink.duration ?? 4) : 4;
+  const blinkDelay = typeof enableBlink === "object" ? (enableBlink.delay ?? 0) : 0;
+  const delayStr = blinkDelay ? ` ${blinkDelay}s` : "";
 
   return (
     <svg
@@ -401,18 +423,30 @@ export function SolFace({
       style={{ display: "block", ...style }}
       {...rest}
     >
-      {enableBlink && (
+      {blinkEnabled && (
         <style>{`
           @keyframes ${uid}-blink {
             0%, 90%, 100% { transform: scaleY(1); }
             95% { transform: scaleY(0.1); }
           }
           .${uid}-eyes {
-            animation: ${uid}-blink 4s ease-in-out infinite;
+            animation: ${uid}-blink ${blinkDuration}s ease-in-out${delayStr} infinite;
             transform-origin: 32px 30px;
           }
         `}</style>
       )}
+
+      <rect x="0" y="0" width="64" height="64" fill={bgCol} opacity={bgOpacity} rx={bgRadius} />
+
+      {renderHair(traits, hairCol)}
+      {renderFace(traits, skin)}
+      <g className={blinkEnabled ? `${uid}-eyes` : undefined}>
+        {renderEyes(traits, eyeCol, eyeWhite)}
+      </g>
+      {renderEyebrows(traits, browCol)}
+      {renderNose(traits, skin, noseCol)}
+      {renderMouth(traits, mouthCol, eyeWhite)}
+      {renderAccessory(traits, accCol)}
 
       {theme?.border && (
         <rect
@@ -423,18 +457,6 @@ export function SolFace({
           rx={bgRadius}
         />
       )}
-
-      <rect x="0" y="0" width="64" height="64" fill={bgCol} opacity={bgOpacity} rx={bgRadius} />
-
-      {renderHair(traits, hairCol)}
-      {renderFace(traits, skin)}
-      <g className={enableBlink ? `${uid}-eyes` : undefined}>
-        {renderEyes(traits, eyeCol)}
-      </g>
-      {renderEyebrows(traits, browCol)}
-      {renderNose(traits, skin)}
-      {renderMouth(traits, mouthCol)}
-      {renderAccessory(traits, accCol)}
     </svg>
   );
 }

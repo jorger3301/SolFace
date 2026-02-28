@@ -28,28 +28,28 @@ function renderFace(t: SolFaceTraits, skin: string): string {
 
 // ─── Eyes ────────────────────────────────────────
 
-function renderEyes(t: SolFaceTraits, c: string): string {
+function renderEyes(t: SolFaceTraits, c: string, w: string = "white"): string {
   const l = 24, r = 40, y = 30;
 
   switch (t.eyeStyle) {
     case 0: // Round
-      return `<circle cx="${l}" cy="${y}" r="3.5" fill="white"/><circle cx="${l + 1}" cy="${y}" r="2" fill="${c}"/><circle cx="${r}" cy="${y}" r="3.5" fill="white"/><circle cx="${r + 1}" cy="${y}" r="2" fill="${c}"/>`;
+      return `<circle cx="${l}" cy="${y}" r="3.5" fill="${w}"/><circle cx="${l + 1}" cy="${y}" r="2" fill="${c}"/><circle cx="${r}" cy="${y}" r="3.5" fill="${w}"/><circle cx="${r + 1}" cy="${y}" r="2" fill="${c}"/>`;
     case 1: // Dots
       return `<circle cx="${l}" cy="${y}" r="2" fill="${c}"/><circle cx="${r}" cy="${y}" r="2" fill="${c}"/>`;
     case 2: // Almond
-      return `<ellipse cx="${l}" cy="${y}" rx="4" ry="2.5" fill="white"/><circle cx="${l + 0.5}" cy="${y}" r="1.5" fill="${c}"/><ellipse cx="${r}" cy="${y}" rx="4" ry="2.5" fill="white"/><circle cx="${r + 0.5}" cy="${y}" r="1.5" fill="${c}"/>`;
+      return `<ellipse cx="${l}" cy="${y}" rx="4" ry="2.5" fill="${w}"/><circle cx="${l + 0.5}" cy="${y}" r="1.5" fill="${c}"/><ellipse cx="${r}" cy="${y}" rx="4" ry="2.5" fill="${w}"/><circle cx="${r + 0.5}" cy="${y}" r="1.5" fill="${c}"/>`;
     case 3: // Wide
-      return `<circle cx="${l}" cy="${y}" r="4.5" fill="white"/><circle cx="${l}" cy="${y + 0.5}" r="2.5" fill="${c}"/><circle cx="${r}" cy="${y}" r="4.5" fill="white"/><circle cx="${r}" cy="${y + 0.5}" r="2.5" fill="${c}"/>`;
+      return `<circle cx="${l}" cy="${y}" r="4.5" fill="${w}"/><circle cx="${l}" cy="${y + 0.5}" r="2.5" fill="${c}"/><circle cx="${r}" cy="${y}" r="4.5" fill="${w}"/><circle cx="${r}" cy="${y + 0.5}" r="2.5" fill="${c}"/>`;
     case 4: // Sleepy
-      return `<ellipse cx="${l}" cy="${y + 1}" rx="3.5" ry="2" fill="white"/><circle cx="${l}" cy="${y + 1}" r="1.5" fill="${c}"/><line x1="${l - 4}" y1="${y - 0.5}" x2="${l + 4}" y2="${y - 0.5}" stroke="${c}" stroke-width="1" stroke-linecap="round"/><ellipse cx="${r}" cy="${y + 1}" rx="3.5" ry="2" fill="white"/><circle cx="${r}" cy="${y + 1}" r="1.5" fill="${c}"/><line x1="${r - 4}" y1="${y - 0.5}" x2="${r + 4}" y2="${y - 0.5}" stroke="${c}" stroke-width="1" stroke-linecap="round"/>`;
+      return `<ellipse cx="${l}" cy="${y + 1}" rx="3.5" ry="2" fill="${w}"/><circle cx="${l}" cy="${y + 1}" r="1.5" fill="${c}"/><line x1="${l - 4}" y1="${y - 0.5}" x2="${l + 4}" y2="${y - 0.5}" stroke="${c}" stroke-width="1" stroke-linecap="round"/><ellipse cx="${r}" cy="${y + 1}" rx="3.5" ry="2" fill="${w}"/><circle cx="${r}" cy="${y + 1}" r="1.5" fill="${c}"/><line x1="${r - 4}" y1="${y - 0.5}" x2="${r + 4}" y2="${y - 0.5}" stroke="${c}" stroke-width="1" stroke-linecap="round"/>`;
     case 5: // Winking
-      return `<path d="M${l - 3} ${y} Q${l} ${y + 3} ${l + 3} ${y}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/><circle cx="${r}" cy="${y}" r="3.5" fill="white"/><circle cx="${r + 1}" cy="${y}" r="2" fill="${c}"/>`;
+      return `<path d="M${l - 3} ${y} Q${l} ${y + 3} ${l + 3} ${y}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/><circle cx="${r}" cy="${y}" r="3.5" fill="${w}"/><circle cx="${r + 1}" cy="${y}" r="2" fill="${c}"/>`;
     case 6: // Lashes
-      return `<circle cx="${l}" cy="${y}" r="3" fill="white"/><circle cx="${l + 0.5}" cy="${y}" r="1.5" fill="${c}"/><line x1="${l + 2}" y1="${y - 3}" x2="${l + 3.5}" y2="${y - 4.5}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/><line x1="${l + 3}" y1="${y - 2}" x2="${l + 4.5}" y2="${y - 3}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/><circle cx="${r}" cy="${y}" r="3" fill="white"/><circle cx="${r + 0.5}" cy="${y}" r="1.5" fill="${c}"/><line x1="${r + 2}" y1="${y - 3}" x2="${r + 3.5}" y2="${y - 4.5}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/><line x1="${r + 3}" y1="${y - 2}" x2="${r + 4.5}" y2="${y - 3}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/>`;
+      return `<circle cx="${l}" cy="${y}" r="3" fill="${w}"/><circle cx="${l + 0.5}" cy="${y}" r="1.5" fill="${c}"/><line x1="${l + 2}" y1="${y - 3}" x2="${l + 3.5}" y2="${y - 4.5}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/><line x1="${l + 3}" y1="${y - 2}" x2="${l + 4.5}" y2="${y - 3}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/><circle cx="${r}" cy="${y}" r="3" fill="${w}"/><circle cx="${r + 0.5}" cy="${y}" r="1.5" fill="${c}"/><line x1="${r + 2}" y1="${y - 3}" x2="${r + 3.5}" y2="${y - 4.5}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/><line x1="${r + 3}" y1="${y - 2}" x2="${r + 4.5}" y2="${y - 3}" stroke="${c}" stroke-width="0.8" stroke-linecap="round"/>`;
     case 7: // Narrow
-      return `<ellipse cx="${l}" cy="${y}" rx="4" ry="1.2" fill="white"/><ellipse cx="${l + 0.5}" cy="${y}" rx="2" ry="1" fill="${c}"/><ellipse cx="${r}" cy="${y}" rx="4" ry="1.2" fill="white"/><ellipse cx="${r + 0.5}" cy="${y}" rx="2" ry="1" fill="${c}"/>`;
+      return `<ellipse cx="${l}" cy="${y}" rx="4" ry="1.2" fill="${w}"/><ellipse cx="${l + 0.5}" cy="${y}" rx="2" ry="1" fill="${c}"/><ellipse cx="${r}" cy="${y}" rx="4" ry="1.2" fill="${w}"/><ellipse cx="${r + 0.5}" cy="${y}" rx="2" ry="1" fill="${c}"/>`;
     default:
-      return `<circle cx="${l}" cy="${y}" r="3" fill="white"/><circle cx="${l + 1}" cy="${y}" r="2" fill="${c}"/><circle cx="${r}" cy="${y}" r="3" fill="white"/><circle cx="${r + 1}" cy="${y}" r="2" fill="${c}"/>`;
+      return `<circle cx="${l}" cy="${y}" r="3" fill="${w}"/><circle cx="${l + 1}" cy="${y}" r="2" fill="${c}"/><circle cx="${r}" cy="${y}" r="3" fill="${w}"/><circle cx="${r + 1}" cy="${y}" r="2" fill="${c}"/>`;
   }
 }
 
@@ -74,9 +74,9 @@ function renderEyebrows(t: SolFaceTraits, col: string = "#2a2020"): string {
 
 // ─── Nose ───────────────────────────────────────
 
-function renderNose(t: SolFaceTraits, skin: string): string {
+function renderNose(t: SolFaceTraits, skin: string, noseCol?: string): string {
   const cx = 32, y = 36;
-  const sh = skin + "aa";
+  const sh = noseCol ?? (skin + "aa");
 
   switch (t.nose) {
     case 0: return "";
@@ -89,7 +89,7 @@ function renderNose(t: SolFaceTraits, skin: string): string {
 
 // ─── Mouth ──────────────────────────────────────
 
-function renderMouth(t: SolFaceTraits, col: string = "#c05050"): string {
+function renderMouth(t: SolFaceTraits, col: string = "#c05050", teethCol: string = "white"): string {
   const cx = 32, y = 42;
 
   switch (t.mouth) {
@@ -104,7 +104,7 @@ function renderMouth(t: SolFaceTraits, col: string = "#c05050"): string {
     case 4: // Smirk
       return `<path d="M${cx - 4} ${y + 1} Q${cx - 1} ${y + 1} ${cx + 4} ${y - 1}" fill="none" stroke="${col}" stroke-width="1.2" stroke-linecap="round"/>`;
     case 5: // Wide smile
-      return `<path d="M${cx - 6} ${y} Q${cx} ${y + 6} ${cx + 6} ${y}" fill="white" stroke="${col}" stroke-width="1"/>`;
+      return `<path d="M${cx - 6} ${y} Q${cx} ${y + 6} ${cx + 6} ${y}" fill="${teethCol}" stroke="${col}" stroke-width="1"/>`;
     default:
       return `<path d="M${cx - 4} ${y} Q${cx} ${y + 4} ${cx + 4} ${y}" fill="none" stroke="${col}" stroke-width="1.2" stroke-linecap="round"/>`;
   }
@@ -132,8 +132,8 @@ function renderAccessory(t: SolFaceTraits, col: string = "#444"): string {
   if (t.accessory <= 1) return "";
   if (t.accessory === 2) return `<g fill="none" stroke="${col}" stroke-width="1"><circle cx="24" cy="30" r="5"/><circle cx="40" cy="30" r="5"/><line x1="29" y1="30" x2="35" y2="30"/><line x1="19" y1="30" x2="14" y2="28"/><line x1="45" y1="30" x2="50" y2="28"/></g>`;
   if (t.accessory === 3) return `<g fill="none" stroke="${col}" stroke-width="1"><rect x="19" y="26" width="10" height="8" rx="1"/><rect x="35" y="26" width="10" height="8" rx="1"/><line x1="29" y1="30" x2="35" y2="30"/><line x1="19" y1="30" x2="14" y2="28"/><line x1="45" y1="30" x2="50" y2="28"/></g>`;
-  if (t.accessory === 4) return `<circle cx="11" cy="36" r="2" fill="#f0c060" stroke="#d4a030" stroke-width="0.5"/>`;
-  if (t.accessory === 5) return `<g><rect x="12" y="20" width="40" height="4" rx="1" fill="#f85149"/><path d="M12 22 L8 26 L12 24 Z" fill="#f85149"/></g>`;
+  if (t.accessory === 4) return `<circle cx="11" cy="36" r="2" fill="${col}" stroke="${col}" stroke-width="0.5"/>`;
+  if (t.accessory === 5) return `<g><rect x="12" y="20" width="40" height="4" rx="1" fill="${col}"/><path d="M12 22 L8 26 L12 24 Z" fill="${col}"/></g>`;
   return "";
 }
 
@@ -143,7 +143,7 @@ export function renderSolFaceSVG(
   walletAddress: string,
   options?: RenderOptions
 ): string {
-  const { size = 64, theme, traitOverrides, enableBlink } = options ?? {};
+  const { size = 64, theme, traitOverrides, enableBlink, className, colorOverrides } = options ?? {};
   const traits = generateTraits(walletAddress, traitOverrides);
 
   const skinColors = theme?.skinColors ?? SKIN_COLORS;
@@ -151,44 +151,53 @@ export function renderSolFaceSVG(
   const hairColors = theme?.hairColors ?? HAIR_COLORS;
   const bgColors = theme?.bgColors ?? BG_COLORS;
 
-  const skin = skinColors[traits.skinColor % skinColors.length];
-  const eyeCol = eyeColors[traits.eyeColor % eyeColors.length];
-  const hairCol = hairColors[traits.hairColor % hairColors.length];
-  const bgCol = bgColors[traits.bgColor % bgColors.length];
+  const skin = colorOverrides?.skin ?? skinColors[traits.skinColor % skinColors.length];
+  const eyeCol = colorOverrides?.eyes ?? eyeColors[traits.eyeColor % eyeColors.length];
+  const hairCol = colorOverrides?.hair ?? hairColors[traits.hairColor % hairColors.length];
+  const bgCol = colorOverrides?.bg ?? bgColors[traits.bgColor % bgColors.length];
 
   const bgOpacity = theme?.bgOpacity ?? 0.15;
   const bgRadius = theme?.bgRadius ?? 4;
-  const mouthCol = theme?.mouthColor ?? "#c05050";
-  const browCol = theme?.eyebrowColor ?? "#2a2020";
-  const accCol = theme?.accessoryColor ?? "#444";
+  const mouthCol = colorOverrides?.mouth ?? theme?.mouthColor ?? "#c05050";
+  const browCol = colorOverrides?.eyebrow ?? theme?.eyebrowColor ?? "#2a2020";
+  const accCol = colorOverrides?.accessory ?? theme?.accessoryColor ?? "#444";
+  const eyeWhite = colorOverrides?.eyeWhite ?? theme?.eyeWhiteColor ?? "white";
+  const noseCol = colorOverrides?.nose ?? theme?.noseColor;
 
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${size}" height="${size}">`;
-
-  if (theme?.border) {
-    svg += `<rect x="0" y="0" width="64" height="64" fill="none" stroke="${theme.border.color}" stroke-width="${theme.border.width}" rx="${bgRadius}"/>`;
-  }
+  const classAttr = className ? ` class="${className}"` : "";
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${size}" height="${size}"${classAttr}>`;
 
   svg += `<rect x="0" y="0" width="64" height="64" fill="${bgCol}" opacity="${bgOpacity}" rx="${bgRadius}"/>`;
 
-  if (enableBlink) {
+  const blinkEnabled = !!enableBlink;
+  const blinkDuration = typeof enableBlink === "object" ? (enableBlink.duration ?? 4) : 4;
+  const blinkDelay = typeof enableBlink === "object" ? (enableBlink.delay ?? 0) : 0;
+
+  if (blinkEnabled) {
     const uid = `sf-${walletAddress.slice(0, 8)}`;
-    svg += `<style>@keyframes ${uid}-blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}.${uid}-eyes{animation:${uid}-blink 4s ease-in-out infinite;transform-origin:32px 30px}</style>`;
+    const delayStr = blinkDelay ? ` ${blinkDelay}s` : "";
+    svg += `<style>@keyframes ${uid}-blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}.${uid}-eyes{animation:${uid}-blink ${blinkDuration}s ease-in-out${delayStr} infinite;transform-origin:32px 30px}</style>`;
   }
 
   svg += renderHair(traits, hairCol);
   svg += renderFace(traits, skin);
 
-  if (enableBlink) {
+  if (blinkEnabled) {
     const uid = `sf-${walletAddress.slice(0, 8)}`;
     svg += `<g class="${uid}-eyes">`;
   }
-  svg += renderEyes(traits, eyeCol);
-  if (enableBlink) svg += `</g>`;
+  svg += renderEyes(traits, eyeCol, eyeWhite);
+  if (blinkEnabled) svg += `</g>`;
 
   svg += renderEyebrows(traits, browCol);
-  svg += renderNose(traits, skin);
-  svg += renderMouth(traits, mouthCol);
+  svg += renderNose(traits, skin, noseCol);
+  svg += renderMouth(traits, mouthCol, eyeWhite);
   svg += renderAccessory(traits, accCol);
+
+  if (theme?.border) {
+    svg += `<rect x="0" y="0" width="64" height="64" fill="none" stroke="${theme.border.color}" stroke-width="${theme.border.width}" rx="${bgRadius}"/>`;
+  }
+
   svg += `</svg>`;
 
   return svg;

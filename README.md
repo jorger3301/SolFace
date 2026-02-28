@@ -229,6 +229,8 @@ const myTheme: SolFaceTheme = {
   mouthColor: "#e06070",
   eyebrowColor: "#aaa",
   accessoryColor: "#888",
+  eyeWhiteColor: "#e0e0e0",    // Sclera color (great for dark themes)
+  noseColor: "#c68642aa",       // Nose color (defaults to skin + transparency)
   bgOpacity: 1,
   bgRadius: 999,
   border: { color: "#14F195", width: 2 },
@@ -409,9 +411,10 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 <SolFace
   walletAddress="7xKXqR..."       // Required
   size={48}                         // Default: 64
-  enableBlink={true}                // Default: false
+  enableBlink={true}                // Default: false — or { duration: 2, delay: 0.5 }
   theme={darkTheme}                 // Optional theme
   traitOverrides={{ hairStyle: 0 }} // Pin specific traits
+  colorOverrides={{ hair: "#ff0000" }} // Override individual colors
   className="my-avatar"             // CSS class
   style={{ borderRadius: "50%" }}   // Inline styles
   onClick={handleClick}             // All SVG props supported

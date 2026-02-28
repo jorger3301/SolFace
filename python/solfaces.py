@@ -178,25 +178,25 @@ def _render_face(t: SolFaceTraits, skin: str) -> str:
     return f'<circle cx="32" cy="34" r="20" fill="{skin}"/>'
 
 
-def _render_eyes(t: SolFaceTraits, c: str) -> str:
+def _render_eyes(t: SolFaceTraits, c: str, w: str = "white") -> str:
     l, r, y = 24, 40, 30
     if t.eye_style == 0:
-        return f'<circle cx="{l}" cy="{y}" r="3.5" fill="white"/><circle cx="{l+1}" cy="{y}" r="2" fill="{c}"/><circle cx="{r}" cy="{y}" r="3.5" fill="white"/><circle cx="{r+1}" cy="{y}" r="2" fill="{c}"/>'
+        return f'<circle cx="{l}" cy="{y}" r="3.5" fill="{w}"/><circle cx="{l+1}" cy="{y}" r="2" fill="{c}"/><circle cx="{r}" cy="{y}" r="3.5" fill="{w}"/><circle cx="{r+1}" cy="{y}" r="2" fill="{c}"/>'
     if t.eye_style == 1:
         return f'<circle cx="{l}" cy="{y}" r="2" fill="{c}"/><circle cx="{r}" cy="{y}" r="2" fill="{c}"/>'
     if t.eye_style == 2:
-        return f'<ellipse cx="{l}" cy="{y}" rx="4" ry="2.5" fill="white"/><circle cx="{l+0.5}" cy="{y}" r="1.5" fill="{c}"/><ellipse cx="{r}" cy="{y}" rx="4" ry="2.5" fill="white"/><circle cx="{r+0.5}" cy="{y}" r="1.5" fill="{c}"/>'
+        return f'<ellipse cx="{l}" cy="{y}" rx="4" ry="2.5" fill="{w}"/><circle cx="{l+0.5}" cy="{y}" r="1.5" fill="{c}"/><ellipse cx="{r}" cy="{y}" rx="4" ry="2.5" fill="{w}"/><circle cx="{r+0.5}" cy="{y}" r="1.5" fill="{c}"/>'
     if t.eye_style == 3:
-        return f'<circle cx="{l}" cy="{y}" r="4.5" fill="white"/><circle cx="{l}" cy="{y+0.5}" r="2.5" fill="{c}"/><circle cx="{r}" cy="{y}" r="4.5" fill="white"/><circle cx="{r}" cy="{y+0.5}" r="2.5" fill="{c}"/>'
+        return f'<circle cx="{l}" cy="{y}" r="4.5" fill="{w}"/><circle cx="{l}" cy="{y+0.5}" r="2.5" fill="{c}"/><circle cx="{r}" cy="{y}" r="4.5" fill="{w}"/><circle cx="{r}" cy="{y+0.5}" r="2.5" fill="{c}"/>'
     if t.eye_style == 4:
-        return f'<ellipse cx="{l}" cy="{y+1}" rx="3.5" ry="2" fill="white"/><circle cx="{l}" cy="{y+1}" r="1.5" fill="{c}"/><line x1="{l-4}" y1="{y-0.5}" x2="{l+4}" y2="{y-0.5}" stroke="{c}" stroke-width="1" stroke-linecap="round"/><ellipse cx="{r}" cy="{y+1}" rx="3.5" ry="2" fill="white"/><circle cx="{r}" cy="{y+1}" r="1.5" fill="{c}"/><line x1="{r-4}" y1="{y-0.5}" x2="{r+4}" y2="{y-0.5}" stroke="{c}" stroke-width="1" stroke-linecap="round"/>'
+        return f'<ellipse cx="{l}" cy="{y+1}" rx="3.5" ry="2" fill="{w}"/><circle cx="{l}" cy="{y+1}" r="1.5" fill="{c}"/><line x1="{l-4}" y1="{y-0.5}" x2="{l+4}" y2="{y-0.5}" stroke="{c}" stroke-width="1" stroke-linecap="round"/><ellipse cx="{r}" cy="{y+1}" rx="3.5" ry="2" fill="{w}"/><circle cx="{r}" cy="{y+1}" r="1.5" fill="{c}"/><line x1="{r-4}" y1="{y-0.5}" x2="{r+4}" y2="{y-0.5}" stroke="{c}" stroke-width="1" stroke-linecap="round"/>'
     if t.eye_style == 5:
-        return f'<path d="M{l-3} {y} Q{l} {y+3} {l+3} {y}" fill="none" stroke="{c}" stroke-width="1.5" stroke-linecap="round"/><circle cx="{r}" cy="{y}" r="3.5" fill="white"/><circle cx="{r+1}" cy="{y}" r="2" fill="{c}"/>'
+        return f'<path d="M{l-3} {y} Q{l} {y+3} {l+3} {y}" fill="none" stroke="{c}" stroke-width="1.5" stroke-linecap="round"/><circle cx="{r}" cy="{y}" r="3.5" fill="{w}"/><circle cx="{r+1}" cy="{y}" r="2" fill="{c}"/>'
     if t.eye_style == 6:
-        return f'<circle cx="{l}" cy="{y}" r="3" fill="white"/><circle cx="{l+0.5}" cy="{y}" r="1.5" fill="{c}"/><line x1="{l+2}" y1="{y-3}" x2="{l+3.5}" y2="{y-4.5}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/><line x1="{l+3}" y1="{y-2}" x2="{l+4.5}" y2="{y-3}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/><circle cx="{r}" cy="{y}" r="3" fill="white"/><circle cx="{r+0.5}" cy="{y}" r="1.5" fill="{c}"/><line x1="{r+2}" y1="{y-3}" x2="{r+3.5}" y2="{y-4.5}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/><line x1="{r+3}" y1="{y-2}" x2="{r+4.5}" y2="{y-3}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/>'
+        return f'<circle cx="{l}" cy="{y}" r="3" fill="{w}"/><circle cx="{l+0.5}" cy="{y}" r="1.5" fill="{c}"/><line x1="{l+2}" y1="{y-3}" x2="{l+3.5}" y2="{y-4.5}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/><line x1="{l+3}" y1="{y-2}" x2="{l+4.5}" y2="{y-3}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/><circle cx="{r}" cy="{y}" r="3" fill="{w}"/><circle cx="{r+0.5}" cy="{y}" r="1.5" fill="{c}"/><line x1="{r+2}" y1="{y-3}" x2="{r+3.5}" y2="{y-4.5}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/><line x1="{r+3}" y1="{y-2}" x2="{r+4.5}" y2="{y-3}" stroke="{c}" stroke-width="0.8" stroke-linecap="round"/>'
     if t.eye_style == 7:
-        return f'<ellipse cx="{l}" cy="{y}" rx="4" ry="1.2" fill="white"/><ellipse cx="{l+0.5}" cy="{y}" rx="2" ry="1" fill="{c}"/><ellipse cx="{r}" cy="{y}" rx="4" ry="1.2" fill="white"/><ellipse cx="{r+0.5}" cy="{y}" rx="2" ry="1" fill="{c}"/>'
-    return f'<circle cx="{l}" cy="{y}" r="3" fill="white"/><circle cx="{l+1}" cy="{y}" r="2" fill="{c}"/><circle cx="{r}" cy="{y}" r="3" fill="white"/><circle cx="{r+1}" cy="{y}" r="2" fill="{c}"/>'
+        return f'<ellipse cx="{l}" cy="{y}" rx="4" ry="1.2" fill="{w}"/><ellipse cx="{l+0.5}" cy="{y}" rx="2" ry="1" fill="{c}"/><ellipse cx="{r}" cy="{y}" rx="4" ry="1.2" fill="{w}"/><ellipse cx="{r+0.5}" cy="{y}" rx="2" ry="1" fill="{c}"/>'
+    return f'<circle cx="{l}" cy="{y}" r="3" fill="{w}"/><circle cx="{l+1}" cy="{y}" r="2" fill="{c}"/><circle cx="{r}" cy="{y}" r="3" fill="{w}"/><circle cx="{r+1}" cy="{y}" r="2" fill="{c}"/>'
 
 
 def _render_eyebrows(t: SolFaceTraits, col: str = "#2a2020") -> str:
@@ -209,9 +209,9 @@ def _render_eyebrows(t: SolFaceTraits, col: str = "#2a2020") -> str:
     return ""
 
 
-def _render_nose(t: SolFaceTraits, skin: str) -> str:
+def _render_nose(t: SolFaceTraits, skin: str, nose_col: Optional[str] = None) -> str:
     cx, y = 32, 36
-    sh = skin + "aa"
+    sh = nose_col if nose_col else (skin + "aa")
     if t.nose == 0: return ""
     if t.nose == 1: return f'<circle cx="{cx}" cy="{y}" r="1.5" fill="{sh}"/>'
     if t.nose == 2: return f'<path d="M{cx} {y-1.5} L{cx+2.5} {y+2} L{cx-2.5} {y+2} Z" fill="{sh}"/>'
@@ -219,14 +219,14 @@ def _render_nose(t: SolFaceTraits, skin: str) -> str:
     return ""
 
 
-def _render_mouth(t: SolFaceTraits, col: str = "#c05050") -> str:
+def _render_mouth(t: SolFaceTraits, col: str = "#c05050", teeth_col: str = "white") -> str:
     cx, y = 32, 42
     if t.mouth == 0: return f'<path d="M{cx-4} {y} Q{cx} {y+4} {cx+4} {y}" fill="none" stroke="{col}" stroke-width="1.2" stroke-linecap="round"/>'
     if t.mouth == 1: return f'<line x1="{cx-3}" y1="{y+1}" x2="{cx+3}" y2="{y+1}" stroke="{col}" stroke-width="1.2" stroke-linecap="round"/>'
     if t.mouth == 2: return f'<path d="M{cx-6} {y} Q{cx} {y+5} {cx+6} {y}" fill="none" stroke="{col}" stroke-width="1.5" stroke-linecap="round"/>'
     if t.mouth == 3: return f'<ellipse cx="{cx}" cy="{y+1}" rx="3" ry="2.5" fill="{col}" opacity="0.8"/>'
     if t.mouth == 4: return f'<path d="M{cx-4} {y+1} Q{cx-1} {y+1} {cx+4} {y-1}" fill="none" stroke="{col}" stroke-width="1.2" stroke-linecap="round"/>'
-    if t.mouth == 5: return f'<path d="M{cx-6} {y} Q{cx} {y+6} {cx+6} {y}" fill="white" stroke="{col}" stroke-width="1"/>'
+    if t.mouth == 5: return f'<path d="M{cx-6} {y} Q{cx} {y+6} {cx+6} {y}" fill="{teeth_col}" stroke="{col}" stroke-width="1"/>'
     return f'<path d="M{cx-4} {y} Q{cx} {y+4} {cx+4} {y}" fill="none" stroke="{col}" stroke-width="1.2" stroke-linecap="round"/>'
 
 
@@ -246,8 +246,8 @@ def _render_accessory(t: SolFaceTraits, col: str = "#444") -> str:
     if t.accessory <= 1: return ""
     if t.accessory == 2: return f'<g fill="none" stroke="{col}" stroke-width="1"><circle cx="24" cy="30" r="5"/><circle cx="40" cy="30" r="5"/><line x1="29" y1="30" x2="35" y2="30"/><line x1="19" y1="30" x2="14" y2="28"/><line x1="45" y1="30" x2="50" y2="28"/></g>'
     if t.accessory == 3: return f'<g fill="none" stroke="{col}" stroke-width="1"><rect x="19" y="26" width="10" height="8" rx="1"/><rect x="35" y="26" width="10" height="8" rx="1"/><line x1="29" y1="30" x2="35" y2="30"/><line x1="19" y1="30" x2="14" y2="28"/><line x1="45" y1="30" x2="50" y2="28"/></g>'
-    if t.accessory == 4: return '<circle cx="11" cy="36" r="2" fill="#f0c060" stroke="#d4a030" stroke-width="0.5"/>'
-    if t.accessory == 5: return '<g><rect x="12" y="20" width="40" height="4" rx="1" fill="#f85149"/><path d="M12 22 L8 26 L12 24 Z" fill="#f85149"/></g>'
+    if t.accessory == 4: return f'<circle cx="11" cy="36" r="2" fill="{col}" stroke="{col}" stroke-width="0.5"/>'
+    if t.accessory == 5: return f'<g><rect x="12" y="20" width="40" height="4" rx="1" fill="{col}"/><path d="M12 22 L8 26 L12 24 Z" fill="{col}"/></g>'
     return ""
 
 
@@ -256,27 +256,44 @@ def render_svg(
     size: int = 64,
     bg_opacity: float = 0.15,
     bg_radius: int = 4,
+    mouth_color: str = "#c05050",
+    eyebrow_color: str = "#2a2020",
+    accessory_color: str = "#444",
+    eye_white_color: str = "white",
+    nose_color: Optional[str] = None,
+    color_overrides: Optional[Dict[str, str]] = None,
 ) -> str:
     """
     Render a SolFace as an SVG string.
     Produces identical output to the JavaScript version.
+
+    Args:
+        color_overrides: Optional dict with keys: skin, eyes, hair, bg,
+            mouth, eyebrow, accessory, nose, eye_white
     """
     t = generate_traits(wallet_address)
-    skin = SKIN_COLORS[t.skin_color % len(SKIN_COLORS)]
-    eye_col = EYE_COLORS[t.eye_color % len(EYE_COLORS)]
-    hair_col = HAIR_COLORS[t.hair_color % len(HAIR_COLORS)]
-    bg_col = BG_COLORS[t.bg_color % len(BG_COLORS)]
+    co = color_overrides or {}
+
+    skin = co.get("skin") or SKIN_COLORS[t.skin_color % len(SKIN_COLORS)]
+    eye_col = co.get("eyes") or EYE_COLORS[t.eye_color % len(EYE_COLORS)]
+    hair_col = co.get("hair") or HAIR_COLORS[t.hair_color % len(HAIR_COLORS)]
+    bg_col = co.get("bg") or BG_COLORS[t.bg_color % len(BG_COLORS)]
+    mouth_col = co.get("mouth") or mouth_color
+    brow_col = co.get("eyebrow") or eyebrow_color
+    acc_col = co.get("accessory") or accessory_color
+    eye_white = co.get("eye_white") or eye_white_color
+    nose_col = co.get("nose") or nose_color
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="{size}" height="{size}">',
         f'<rect x="0" y="0" width="64" height="64" fill="{bg_col}" opacity="{bg_opacity}" rx="{bg_radius}"/>',
         _render_hair(t, hair_col),
         _render_face(t, skin),
-        _render_eyes(t, eye_col),
-        _render_eyebrows(t),
-        _render_nose(t, skin),
-        _render_mouth(t),
-        _render_accessory(t),
+        _render_eyes(t, eye_col, eye_white),
+        _render_eyebrows(t, brow_col),
+        _render_nose(t, skin, nose_col),
+        _render_mouth(t, mouth_col, eye_white),
+        _render_accessory(t, acc_col),
         "</svg>",
     ]
     return "".join(p for p in parts if p)

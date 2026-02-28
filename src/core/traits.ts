@@ -26,6 +26,8 @@ export interface SolFaceTheme {
   mouthColor?: string;
   eyebrowColor?: string;
   accessoryColor?: string;
+  eyeWhiteColor?: string;
+  noseColor?: string;
   bgOpacity?: number;
   bgRadius?: number;
   border?: { color: string; width: number };
@@ -35,7 +37,22 @@ export interface RenderOptions {
   size?: number;
   theme?: SolFaceTheme;
   traitOverrides?: Partial<SolFaceTraits>;
-  enableBlink?: boolean;
+  enableBlink?: boolean | {
+    duration?: number;
+    delay?: number;
+  };
+  className?: string;
+  colorOverrides?: {
+    skin?: string;
+    eyes?: string;
+    hair?: string;
+    bg?: string;
+    mouth?: string;
+    eyebrow?: string;
+    accessory?: string;
+    nose?: string;
+    eyeWhite?: string;
+  };
 }
 
 // ─── Color Palettes ──────────────────────────────

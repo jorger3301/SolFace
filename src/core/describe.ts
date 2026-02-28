@@ -4,7 +4,7 @@
 // for use in system prompts, bios, and self-reference.
 // ═══════════════════════════════════════════════════════════════
 
-import { generateTraits, type SolFaceTraits, type SolFaceTheme } from "./traits";
+import { generateTraits, type SolFaceTraits } from "./traits";
 
 // ─── Vocabulary Maps ─────────────────────────────────────────
 
