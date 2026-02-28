@@ -41,7 +41,7 @@ function send(response: MCPResponse): void {
   process.stdout.write(msg);
 }
 
-function handleRequest(req: MCPRequest): MCPResponse {
+function handleRequest(req: MCPRequest): MCPResponse | null {
   const { id, method, params } = req;
 
   if (method === "initialize") {
@@ -60,8 +60,7 @@ function handleRequest(req: MCPRequest): MCPResponse {
   }
 
   if (method === "notifications/initialized") {
-    // No response needed for notifications
-    return { jsonrpc: "2.0", id, result: {} };
+    return null; // Notifications get no response per JSON-RPC 2.0
   }
 
   if (method === "tools/list") {
@@ -159,8 +158,8 @@ process.stdin.on("data", (chunk: string) => {
     try {
       const req = JSON.parse(body) as MCPRequest;
       const res = handleRequest(req);
-      // Don't send response for notifications (no id)
-      if (req.id !== undefined) {
+      // Don't send response for notifications
+      if (res && req.id !== undefined) {
         send(res);
       }
     } catch {

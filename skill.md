@@ -1,6 +1,6 @@
 # SolFaces — AI Agent Skill
 
-You have access to SolFaces, a deterministic avatar generator for Solana wallets. Every wallet address produces a unique, consistent face — same wallet = same face, always. No API calls, no database, no randomness. ~11M unique combinations across 11 traits.
+You have access to SolFaces, a deterministic avatar generator for Solana wallets. Every wallet address produces a unique, consistent face — same wallet = same face, always. No API calls, no database, no randomness. ~221M unique combinations across 11 traits.
 
 Use these tools whenever a user mentions wallet avatars, profile pictures, visual identity, or when you need to represent a Solana wallet visually.
 
@@ -418,7 +418,7 @@ In React:
 ## Key Facts
 
 - **Deterministic**: Same wallet = same face, always. Guaranteed by djb2 hash + mulberry32 PRNG.
-- **11 traits**: Face shape (4), skin (6), eye style (8), eye color (5), eyebrows (5), nose (4), mouth (6), hair style (8), hair color (8), accessory (6), background (5) = ~11M unique combinations.
+- **11 traits**: Face shape (4), skin (6), eye style (8), eye color (5), eyebrows (5), nose (4), mouth (6), hair style (8), hair color (8), accessory (6), background (5) = ~221M unique combinations.
 - **Cross-language parity**: JavaScript and Python produce identical output.
 - **Zero dependencies**: Core engine has no runtime deps.
 - **Sub-millisecond**: Trait generation and SVG rendering are nearly instant.

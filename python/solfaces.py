@@ -427,6 +427,9 @@ if __name__ == "__main__":
     size = 64
     if "--size" in args:
         idx = sys.argv.index("--size")
+        if idx + 1 >= len(sys.argv):
+            print("Error: --size requires a value", file=sys.stderr)
+            sys.exit(1)
         size = int(sys.argv[idx + 1])
 
     if "--svg" in args:

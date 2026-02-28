@@ -12,7 +12,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 
 - **Deterministic** — Same wallet always produces the same avatar. No database needed.
 - **Zero dependencies** — Core engine has no runtime dependencies.
-- **~11M unique faces** — 11 traits with multiple variants = massive combination space.
+- **~221M unique faces** — 11 traits with multiple variants = massive combination space.
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
 - **Fully customizable** — Theme system lets you match any UI.
 - **AI-agent ready** — Natural language self-descriptions for agent system prompts.
@@ -448,7 +448,7 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 | Accessory | 6 | None (×2), Round Glasses, Square Glasses, Earring, Bandana |
 | Background | 5 | Lime, Blue, Solana Mint, Sand, Red |
 
-**Total unique combinations: ~11,059,200**
+**Total unique combinations: ~221,184,000**
 
 Algorithm: **djb2 hash** → **mulberry32 PRNG** → sequential trait sampling. Sub-millisecond. Deterministic across JS and Python.
 
