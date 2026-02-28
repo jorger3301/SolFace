@@ -32,7 +32,7 @@ npm install solfaces
 ### CDN (no build step)
 
 ```html
-<script src="https://unpkg.com/solfaces/dist/solfaces.cdn.js"></script>
+<script src="https://unpkg.com/solfaces/dist/solfaces.cdn.global.js"></script>
 ```
 
 ### Python
@@ -69,7 +69,7 @@ mountSolFace("#avatar", "7xKXqR...", { size: 48 });
 ```html
 <div data-solface="7xKXqR..." data-solface-size="48" data-solface-theme="dark"></div>
 
-<script src="https://unpkg.com/solfaces/dist/solfaces.cdn.js"></script>
+<script src="https://unpkg.com/solfaces/dist/solfaces.cdn.global.js"></script>
 <!-- Auto-initializes on DOMContentLoaded -->
 
 <!-- Or use programmatically: -->
@@ -248,6 +248,63 @@ const myTheme = getPresetTheme("dark", {
 
 ---
 
+## AI Agent Tools
+
+SolFaces ships with structured tool definitions that let AI agents discover and use it as a skill — compatible with OpenAI function calling, Anthropic tool use, Vercel AI SDK, and MCP.
+
+### Quick Setup
+
+```ts
+import { allToolsOpenAI, handleToolCall } from "solfaces/agent";
+
+// Register tools with your AI framework
+const tools = allToolsOpenAI();  // or allToolsAnthropic(), allToolsVercelAI()
+
+// Handle tool calls
+const result = await handleToolCall("generate_solface_svg", {
+  wallet: "7xKXqR...",
+  theme: "dark",
+  size: 128,
+});
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `generate_solface_svg` | Render SVG avatar from wallet address |
+| `describe_solface` | Natural language description of an avatar |
+| `get_solface_traits` | Raw trait data with labels and hash |
+| `get_agent_identity` | System prompt snippet for AI agent identity |
+| `list_solface_themes` | List available preset themes |
+
+### MCP Server (Claude Code / Cursor)
+
+```json
+{
+  "mcpServers": {
+    "solfaces": {
+      "command": "npx",
+      "args": ["solfaces-mcp"]
+    }
+  }
+}
+```
+
+### Framework Adapters
+
+```ts
+import {
+  allToolsOpenAI,      // OpenAI function calling
+  allToolsAnthropic,   // Claude / Anthropic tool use
+  allToolsVercelAI,    // Vercel AI SDK
+  allToolsMCP,         // Model Context Protocol
+  handleToolCall,      // Universal dispatcher
+} from "solfaces/agent";
+```
+
+---
+
 ## REST API Templates
 
 Copy-paste route handlers for serving SolFaces as an image API. Full code in `src/api-templates.ts`.
@@ -294,7 +351,7 @@ python solfaces.py 7xKXqR... --svg --size 512   # Custom size
 For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress.
 
 ```html
-<script src="https://unpkg.com/solfaces/dist/solfaces.cdn.js"></script>
+<script src="https://unpkg.com/solfaces/dist/solfaces.cdn.global.js"></script>
 
 <!-- Data attributes auto-initialize -->
 <div data-solface="7xKXqR..." data-solface-size="48"></div>
@@ -328,6 +385,12 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 | `solFaceAltText(wallet)` | `string` | Accessible alt text |
 | `getTraitLabels(traits)` | `Record<string, string>` | Human-readable trait names |
 | `traitHash(wallet)` | `string` | 8-char hex hash |
+| `SOLFACE_TOOLS` | `SolFaceTool[]` | All 5 agent tool definitions |
+| `handleToolCall(name, params)` | `Promise<unknown>` | Universal agent tool dispatcher |
+| `allToolsOpenAI()` | `OpenAITool[]` | Tools in OpenAI format |
+| `allToolsAnthropic()` | `AnthropicTool[]` | Tools in Anthropic format |
+| `allToolsVercelAI()` | `Record<string, VercelAITool>` | Tools in Vercel AI SDK format |
+| `allToolsMCP()` | `MCPTool[]` | Tools in MCP format |
 
 ### React Component Props
 
@@ -348,11 +411,12 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 
 | Path | Contents | React? |
 |------|----------|--------|
-| `solfaces` | Core + themes + describe + rasterize | No |
+| `solfaces` | Core + themes + describe + rasterize + agent tools | No |
 | `solfaces/core` | Engine only | No |
-| `solfaces/react` | React component + everything | Yes |
+| `solfaces/react` | React component | Yes |
 | `solfaces/vanilla` | DOM helpers | No |
 | `solfaces/themes` | Preset themes | No |
+| `solfaces/agent` | AI agent tool definitions + framework adapters | No |
 | `solfaces/cdn` | IIFE for `<script>` tags | No |
 
 ---
@@ -398,6 +462,10 @@ solfaces/
 │   ├── themes/
 │   │   ├── presets.ts      # 8 preset themes
 │   │   └── index.ts
+│   ├── agent/
+│   │   ├── tools.ts        # 5 canonical tool definitions + handlers
+│   │   ├── index.ts        # Format adapters (MCP, OpenAI, Anthropic, Vercel AI)
+│   │   └── mcp-server.ts   # Standalone MCP server (npx solfaces-mcp)
 │   ├── cdn.ts              # IIFE bundle for <script> tag
 │   ├── api-templates.ts    # Copy-paste route handlers
 │   └── index.ts
