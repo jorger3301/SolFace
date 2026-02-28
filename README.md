@@ -14,7 +14,8 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 - **Zero dependencies** — Core engine has no runtime dependencies.
 - **~221M unique faces** — 11 traits with multiple variants = massive combination space.
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
-- **Fully customizable** — Theme system lets you match any UI.
+- **Fully customizable** — Every color, every feature. Themes, per-instance overrides, animation timing — adapt every detail to match your UI, your brand, or your users' preferences.
+- **Eliminates dead space** — No more blank avatars or generic placeholders. Every wallet gets a unique face instantly, elevating your dApp or website UI even when users never upload a profile picture.
 - **AI-agent ready** — Natural language self-descriptions for agent system prompts.
 - **PNG rasterization** — Serve real image files for bots, Discord, Telegram, OG images.
 - **SSR-ready** — String renderer works server-side with zero browser APIs.
@@ -205,6 +206,8 @@ const dataUrl = await renderSolFacePNGDataURL("7xKXqR...", { pngSize: 256 });
 
 ## Themes
 
+SolFaces is fully customizable to your UI. Every visual element — skin, eyes, hair, mouth, eyebrows, nose, accessories, background, border, and even eye white/teeth color — can be themed globally or overridden per instance. Use a preset, extend one, or build your own from scratch. You can also use `colorOverrides` to change individual colors on a specific avatar without affecting the theme.
+
 ### Available Presets
 
 | Theme | Description |
@@ -247,6 +250,23 @@ const myTheme = getPresetTheme("dark", {
   border: { color: "#14F195", width: 1 },
 });
 ```
+
+### Per-Instance Color Overrides
+
+Override any color on a specific avatar without changing the global theme:
+
+```tsx
+// React
+<SolFace walletAddress="7xKXqR..." colorOverrides={{ hair: "#ff0000", bg: "#000" }} />
+
+// String renderer
+renderSolFaceSVG("7xKXqR...", {
+  theme: darkTheme,
+  colorOverrides: { skin: "#ffd5b0", eyes: "#00ff00", accessory: "#gold" },
+});
+```
+
+Available override keys: `skin`, `eyes`, `hair`, `bg`, `mouth`, `eyebrow`, `accessory`, `nose`, `eyeWhite`.
 
 ---
 

@@ -1,6 +1,8 @@
 # SolFaces — AI Agent Skill
 
-You have access to SolFaces, a deterministic avatar generator for Solana wallets. Every wallet address produces a unique, consistent face — same wallet = same face, always. No API calls, no database, no randomness. ~221M unique combinations across 11 traits.
+You have access to SolFaces, a fully customizable, deterministic avatar generator for Solana wallets. Every wallet address produces a unique, consistent face — same wallet = same face, always. No API calls, no database, no randomness. ~221M unique combinations across 11 traits.
+
+SolFaces eliminates empty avatar slots and generic placeholders — every wallet gets a unique face instantly, elevating any dApp or website UI even when users never upload a profile picture. Every visual element (skin, eyes, hair, mouth, nose, eyebrows, accessories, background, border, eye whites, teeth) is fully customizable through themes and per-instance color overrides, so it can match any brand or UI.
 
 Use these tools whenever a user mentions wallet avatars, profile pictures, visual identity, or when you need to represent a Solana wallet visually.
 
@@ -234,7 +236,9 @@ await interaction.reply({ files: [attachment] });
 
 ---
 
-## Custom Themes — Match Your UI
+## Custom Themes — Fully Customizable to Any UI
+
+SolFaces is designed to be fully customizable. Every color, every feature — adapt it to match any brand, any design system, any user preference. Use the theme system for global styling, `colorOverrides` for per-instance control, `traitOverrides` to pin specific features, and `enableBlink` with custom timing for animations. No visual element is locked — if you can see it, you can customize it.
 
 ### Use a preset theme
 ```ts
@@ -295,6 +299,23 @@ const brandTheme: SolFaceTheme = {
 | `bgOpacity` | `number` | Background opacity (0-1) |
 | `bgRadius` | `number` | SVG rect border radius |
 | `border` | `{ color, width }` | Optional border around avatar |
+
+### Per-instance color overrides
+
+Override any color on a specific avatar without changing the global theme. Useful for highlighting, user preferences, or special states:
+
+```tsx
+// React
+<SolFace walletAddress="7xKXtg..." colorOverrides={{ hair: "#ff0000", bg: "#000" }} />
+
+// String renderer
+renderSolFaceSVG("7xKXtg...", {
+  theme: darkTheme,
+  colorOverrides: { skin: "#ffd5b0", eyes: "#00ff00" },
+});
+```
+
+Available keys: `skin`, `eyes`, `hair`, `bg`, `mouth`, `eyebrow`, `accessory`, `nose`, `eyeWhite`.
 
 ### Theme recommendations by context
 
@@ -434,6 +455,8 @@ In React:
 
 - **Deterministic**: Same wallet = same face, always. Guaranteed by djb2 hash + mulberry32 PRNG.
 - **11 traits**: Face shape (4), skin (6), eye style (8), eye color (5), eyebrows (5), nose (4), mouth (6), hair style (8), hair color (8), accessory (6), background (5) = ~221M unique combinations.
+- **Fully customizable**: Every visual element is customizable — 12 theme fields for global styling, 9 colorOverride keys for per-instance control, trait pinning, and animation timing. No visual element is locked.
+- **Eliminates dead space**: Instantly fills empty avatar slots with unique, deterministic faces — elevates any dApp or website UI even when users don't upload a profile picture.
 - **Cross-language parity**: JavaScript and Python produce identical output.
 - **Zero dependencies**: Core engine has no runtime deps.
 - **Sub-millisecond**: Trait generation and SVG rendering are nearly instant.
