@@ -87,8 +87,8 @@ def _mulberry32(seed: int):
         # (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
         c = (t ^ ((t & 0xFFFFFFFF) >> 7)) & 0xFFFFFFFF
         d = (61 | t) & 0xFFFFFFFF
-        t = ctypes.c_int32(t + _imul(c, d)).value
-        t = t ^ t
+        old_t = t
+        t = (ctypes.c_int32(old_t + _imul(c, d)).value) ^ old_t
 
         # ((t ^ (t >>> 14)) >>> 0) / 4294967296
         result = ((t ^ ((t & 0xFFFFFFFF) >> 14)) & 0xFFFFFFFF)
