@@ -11,11 +11,9 @@ import {
   EYE_COLORS,
   HAIR_COLORS,
   BG_COLORS,
-  type SolFaceTraits,
-  type SolFaceTheme,
   type RenderOptions,
 } from "./traits";
-import { deriveSkinColors, darken, lighten, blend, luminance, buzzOpacity } from "./colors";
+import { deriveSkinColors, darken, lighten, blend, buzzOpacity } from "./colors";
 
 export type { RenderOptions } from "./traits";
 

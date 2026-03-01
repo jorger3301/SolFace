@@ -366,8 +366,8 @@ function Mouth({ mi, lipColor, isDark }: { mi: number; lipColor: string; isDark:
 
 // ─── Accessory ──────────────────────────────────
 
-function Accessory({ ai, accColor, glassesColor, earringColor, headbandColor }: {
-  ai: number; accColor: string; glassesColor: string; earringColor: string; headbandColor: string;
+function Accessory({ ai, glassesColor, earringColor, headbandColor }: {
+  ai: number; glassesColor: string; earringColor: string; headbandColor: string;
 }) {
   switch (ai) {
     case 0: return null;
@@ -610,7 +610,6 @@ export function SolFace({
   const browColor = colorOverrides?.eyebrow ?? theme?.eyebrowColor ?? derived.browColor;
   const noseFill = colorOverrides?.nose ?? theme?.noseColor ?? derived.noseFill;
   const lipColor = colorOverrides?.mouth ?? theme?.mouthColor ?? derived.lipColor;
-  const accColor = colorOverrides?.accessory ?? theme?.accessoryColor ?? derived.accessoryColor;
   const eyeWhite = colorOverrides?.eyeWhite ?? theme?.eyeWhiteColor ?? derived.eyeWhiteAdapted;
   const glassesColor = theme?.glassesColor ?? "#4a4a5a";
   const earringColor = theme?.earringColor ?? blend(skin, "#d4a840", 0.4);
@@ -713,7 +712,7 @@ export function SolFace({
 
       {full && cheekEnabled && !flat && <FaceOverlays id={id} />}
 
-      {ai === 5 && <Accessory ai={5} accColor={accColor} glassesColor={glassesColor} earringColor={earringColor} headbandColor={headbandColor} />}
+      {ai === 5 && <Accessory ai={5} glassesColor={glassesColor} earringColor={earringColor} headbandColor={headbandColor} />}
 
       <HairFront hi={hi} id={id} hairCol={hairCol} skin={skin} flat={flat} />
 
@@ -726,7 +725,7 @@ export function SolFace({
       <Mouth mi={traits.mouth % 8} lipColor={lipColor} isDark={derived.isDark} />
 
       {ai !== 0 && ai !== 5 && (
-        <Accessory ai={ai} accColor={accColor} glassesColor={glassesColor} earringColor={earringColor} headbandColor={headbandColor} />
+        <Accessory ai={ai} glassesColor={glassesColor} earringColor={earringColor} headbandColor={headbandColor} />
       )}
 
       {theme?.border && (

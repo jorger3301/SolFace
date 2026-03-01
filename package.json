@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/jorger3301/solfaces.git"
   },
+  "homepage": "https://github.com/jorger3301/SolFaces#readme",
   "keywords": [
     "solana",
     "avatar",
@@ -83,11 +84,14 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.3.2",
     "@types/react": "^19.0.0",
+    "eslint": "^10.0.2",
     "react": "^19.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.5.0",
+    "typescript-eslint": "^8.56.1",
     "vitest": "^4.0.18"
   },
   "peerDependencies": {

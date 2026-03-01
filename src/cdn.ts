@@ -20,7 +20,7 @@ import { describeAppearance, solFaceAltText, agentAppearancePrompt } from "./cor
 import { hexToRgb, rgbToHex, darken, lighten, blend, luminance, deriveSkinColors } from "./core/colors";
 import { PRESET_THEMES, getPresetTheme } from "./themes/presets";
 
-import type { SolFaceTheme, RenderOptions } from "./core/traits";
+import type { RenderOptions } from "./core/traits";
 
 // ─── DOM Helpers ─────────────────────────────────────────────
 
@@ -122,7 +122,7 @@ const SolFaces = {
 
 // Attach to window for <script> tag usage
 if (typeof window !== "undefined") {
-  (window as any).SolFaces = SolFaces;
+  (window as unknown as Record<string, unknown>).SolFaces = SolFaces;
 }
 
 // Auto-initialize on DOMContentLoaded if data-solface elements exist
