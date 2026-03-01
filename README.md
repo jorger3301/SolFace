@@ -11,9 +11,9 @@ Every Solana wallet address generates a unique, consistent face — no API calls
 
 Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet needs a visual identity.
 
-![SolFaces theme showcase showing Default, Light, Dark, and Mono rendering modes](solfaces-themes-labeled.png)
+![SolFaces theme showcase showing Default, Light, Dark, Mono, Flat, and Transparent rendering modes](solfaces-themes-labeled.png)
 
-*Default, Light, Dark, and Mono — four of the 11 built-in themes. Each row shows the same 10 wallets rendered in a different theme.*
+*Six built-in themes — Default, Light, Dark, Mono, Flat, and Transparent. 2 Glass and 3 Pixel themes are also available in the React component. Each row shows the same 10 wallets rendered in a different theme.*
 
 ---
 
