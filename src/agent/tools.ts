@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// SOLFACES — AI Agent Tool Definitions
+// SOLFACES v2 — AI Agent Tool Definitions
 // Canonical, framework-agnostic tool schemas with handlers.
 // ═══════════════════════════════════════════════════════════════
 
@@ -37,7 +37,7 @@ export interface SolFaceTool {
 const generateSolfaceSvg: SolFaceTool = {
   name: "generate_solface_svg",
   description:
-    "Generate a deterministic SVG avatar for a Solana wallet address. Returns an SVG string that can be embedded in HTML, saved as a file, or converted to a data URI. The same wallet always produces the same face.",
+    "Generate a deterministic SVG avatar for a Solana wallet address. Returns an SVG string with gradient-rich rendering, skin-luminance-driven colors, and 10 accessory types. The same wallet always produces the same face. ~2.56 billion unique combinations.",
   parameters: {
     type: "object",
     properties: {
@@ -47,17 +47,22 @@ const generateSolfaceSvg: SolFaceTool = {
       },
       size: {
         type: "number",
-        description: "SVG width/height in pixels. Default: 64",
+        description: "SVG width/height in pixels. Default: 64. Sizes >= 48 use full detail (gradients, specular highlights, cheek blush).",
       },
       theme: {
         type: "string",
         description:
-          "Preset theme name: solana, dark, light, mono, neon, jupiter, phantom, circle",
-        enum: ["solana", "dark", "light", "mono", "neon", "jupiter", "phantom", "circle"],
+          "Preset theme name. 'flat' and 'transparent' work everywhere. 'glass', 'glassDark', 'pixel', 'pixelRetro', 'pixelClean' are React-only.",
+        enum: ["default", "dark", "light", "mono", "flat", "transparent", "glass", "glassDark", "pixel", "pixelRetro", "pixelClean"],
       },
       enableBlink: {
         type: "boolean",
         description: "Enable CSS blink animation on the eyes. Default: false",
+      },
+      detail: {
+        type: "string",
+        description: "Detail level: 'full' (gradients, cheeks, specular), 'simplified' (flat shapes), 'auto' (full if size >= 48). Default: auto",
+        enum: ["full", "simplified", "auto"],
       },
     },
     required: ["wallet"],
@@ -66,12 +71,13 @@ const generateSolfaceSvg: SolFaceTool = {
     const wallet = params.wallet as string;
     const size = (params.size as number) ?? 64;
     const enableBlink = (params.enableBlink as boolean) ?? false;
+    const detail = (params.detail as "full" | "simplified" | "auto") ?? "auto";
     const themeName = params.theme as string | undefined;
     const theme: SolFaceTheme | undefined = themeName
       ? getPresetTheme(themeName)
       : undefined;
 
-    return renderSolFaceSVG(wallet, { size, theme, enableBlink });
+    return renderSolFaceSVG(wallet, { size, theme, enableBlink, detail });
   },
 };
 
@@ -80,7 +86,7 @@ const generateSolfaceSvg: SolFaceTool = {
 const describeSolface: SolFaceTool = {
   name: "describe_solface",
   description:
-    "Generate a natural language description of a wallet's SolFace avatar. Useful for alt text, profile bios, system prompts, and accessibility.",
+    "Generate a natural language description of a wallet's SolFace avatar. Useful for alt text, profile bios, system prompts, and accessibility. Describes squircle face, skin tone, eye style/color, hair, accessories, and expression.",
   parameters: {
     type: "object",
     properties: {
@@ -173,20 +179,23 @@ const getAgentIdentity: SolFaceTool = {
 // ─── Tool: list_solface_themes ───────────────────
 
 const THEME_DESCRIPTIONS: Record<string, string> = {
-  solana: "Vibrant Solana brand colors (#14F195, #9945FF)",
-  dark: "Dark backgrounds with muted tones",
-  light: "Soft pastel backgrounds",
+  default: "Base look with gradient-rich rendering — no overrides",
+  dark: "Dark backgrounds with muted tones and subtle border",
+  light: "Soft pastel backgrounds with rounded corners",
   mono: "Full grayscale — all colors replaced with grays",
-  neon: "Cyberpunk high-contrast with neon accents and green border",
-  jupiter: "Jupiter aggregator dark blue palette with subtle border",
-  phantom: "Phantom wallet purple tones with subtle border",
-  circle: "Full circular border-radius (999px) for round avatars",
+  flat: "Disables all gradients — uses flat fill colors only",
+  transparent: "Transparent background with flat rendering",
+  glass: "Liquid glass effect with backdrop blur and specular highlights (React-only)",
+  glassDark: "Dark variant of liquid glass with deeper blur (React-only)",
+  pixel: "Pixel art mode at 16px density with rounded corners (React-only)",
+  pixelRetro: "Retro pixel art with scanlines and drop shadow (React-only)",
+  pixelClean: "Clean pixel art at 24px density (React-only)",
 };
 
 const listSolfaceThemes: SolFaceTool = {
   name: "list_solface_themes",
   description:
-    "List all available SolFace preset themes with descriptions. Themes control colors, borders, backgrounds, and border-radius of generated avatars.",
+    "List all available SolFace preset themes with descriptions. Themes control colors, gradients, borders, and rendering modes. Some themes (glass, pixel) are React-only.",
   parameters: {
     type: "object",
     properties: {},
@@ -195,6 +204,7 @@ const listSolfaceThemes: SolFaceTool = {
     return Object.keys(PRESET_THEMES).map((name) => ({
       name,
       description: THEME_DESCRIPTIONS[name] ?? "",
+      reactOnly: name.startsWith("glass") || name.startsWith("pixel"),
     }));
   },
 };

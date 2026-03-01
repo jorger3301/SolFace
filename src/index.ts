@@ -4,12 +4,27 @@ export {
   getTraitLabels,
   traitHash,
   resolveTheme,
+  mergeTheme,
+  effectiveAccessory,
   SKIN_COLORS,
   EYE_COLORS,
   HAIR_COLORS,
   BG_COLORS,
 } from "./core/traits";
 export type { SolFaceTraits, SolFaceTheme, RenderOptions } from "./core/traits";
+
+// Color math
+export {
+  hexToRgb,
+  rgbToHex,
+  darken,
+  lighten,
+  blend,
+  luminance,
+  deriveSkinColors,
+  buzzOpacity,
+} from "./core/colors";
+export type { DerivedColors } from "./core/colors";
 
 // SVG rendering
 export {

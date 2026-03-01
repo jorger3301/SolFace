@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// SOLFACES — Vanilla DOM Helpers
+// SOLFACES v2 — Vanilla DOM Helpers
 // Mount avatars directly into DOM elements without React.
 // ═══════════════════════════════════════════════════════════════
 
@@ -11,7 +11,7 @@ import type { RenderOptions } from "../core/traits";
 export function mountSolFace(
   element: HTMLElement | string,
   walletAddress: string,
-  options?: RenderOptions
+  options?: RenderOptions,
 ): () => void {
   const el = typeof element === "string"
     ? document.querySelector<HTMLElement>(element)
@@ -29,7 +29,7 @@ export function mountSolFace(
 export function setSolFaceImg(
   img: HTMLImageElement | string,
   walletAddress: string,
-  options?: RenderOptions
+  options?: RenderOptions,
 ): void {
   const el = typeof img === "string"
     ? document.querySelector<HTMLImageElement>(img)
@@ -49,11 +49,25 @@ export function autoInit(root: HTMLElement | Document = document): void {
     const size = parseInt(el.getAttribute("data-solface-size") ?? "64", 10);
     const blink = el.getAttribute("data-solface-blink") === "true";
     const themeName = el.getAttribute("data-solface-theme") as string | null;
+    const flat = el.getAttribute("data-solface-flat") === "true";
+    const detail = el.getAttribute("data-solface-detail") as "full" | "simplified" | "auto" | null;
 
-    const theme = themeName && themeName in PRESET_THEMES
+    let theme = themeName && themeName in PRESET_THEMES
       ? PRESET_THEMES[themeName as keyof typeof PRESET_THEMES]
       : undefined;
 
-    mountSolFace(el, wallet, { size, enableBlink: blink, theme });
+    // data-solface-flat overrides theme flat setting
+    if (flat && theme) {
+      theme = { ...theme, flat: true };
+    } else if (flat) {
+      theme = { flat: true };
+    }
+
+    mountSolFace(el, wallet, {
+      size,
+      enableBlink: blink,
+      theme,
+      detail: detail ?? "auto",
+    });
   });
 }

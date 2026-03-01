@@ -1,4 +1,4 @@
-#  SolFaces
+# SolFaces
 
 **Deterministic wallet avatars for the Solana ecosystem.**
 
@@ -12,10 +12,15 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 
 - **Deterministic** — Same wallet always produces the same avatar. No database needed.
 - **Zero dependencies** — Core engine has no runtime dependencies.
-- **~221M unique faces** — 11 traits with multiple variants = massive combination space.
+- **~2.56B unique faces** — 11 traits with expanded ranges = massive combination space.
+- **Gradient-rich rendering** — Skin-luminance-driven colors, specular highlights, cheek blush, gradient hair, glow overlays.
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
-- **Fully customizable** — Every color, every feature. Themes, per-instance overrides, animation timing — adapt every detail to match your UI, your brand, or your users' preferences.
-- **Eliminates dead space** — No more blank avatars or generic placeholders. Every wallet gets a unique face instantly, elevating your dApp or website UI even when users never upload a profile picture.
+- **Pixel art mode** — Retro pixelated rendering with optional scanlines (React).
+- **Liquid glass mode** — Backdrop-blur glass effect with rim lighting (React).
+- **Flat mode** — Disable all gradients for simplified rendering.
+- **Detail levels** — Full detail (gradients, specular, cheeks) at size >= 48, simplified below.
+- **Fully customizable** — Every visual element is customizable: 4 color palettes, 8 individual color overrides, 9 per-instance color keys, rendering toggles, layout controls, blink timing, and 30+ React-only pixel/glass fields. No visual element is locked — if you can see it, you can theme it.
+- **Eliminates dead space** — No more blank avatars or generic placeholders. Every wallet gets a unique face instantly.
 - **AI-agent ready** — Natural language self-descriptions for agent system prompts.
 - **PNG rasterization** — Serve real image files for bots, Discord, Telegram, OG images.
 - **SSR-ready** — String renderer works server-side with zero browser APIs.
@@ -57,6 +62,25 @@ function UserProfile({ walletAddress }) {
 }
 ```
 
+### Pixel Art Mode (React)
+
+```tsx
+import { SolFace } from "solfaces/react";
+import { pixelTheme, pixelRetroTheme } from "solfaces/themes";
+
+<SolFace walletAddress="7xKXqR..." size={64} theme={pixelTheme} />
+<SolFace walletAddress="7xKXqR..." size={64} theme={pixelRetroTheme} />
+```
+
+### Liquid Glass Mode (React)
+
+```tsx
+import { SolFace } from "solfaces/react";
+import { glassTheme, glassDarkTheme } from "solfaces/themes";
+
+<SolFace walletAddress="7xKXqR..." size={64} theme={glassTheme} />
+```
+
 ### Vanilla JS (npm)
 
 ```js
@@ -69,6 +93,8 @@ mountSolFace("#avatar", "7xKXqR...", { size: 48 });
 
 ```html
 <div data-solface="7xKXqR..." data-solface-size="48" data-solface-theme="dark"></div>
+<div data-solface="DRpbCBMx..." data-solface-flat="true"></div>
+<div data-solface="9WzDXwBb..." data-solface-detail="full"></div>
 
 <script src="https://unpkg.com/solfaces/dist/solfaces.cdn.global.js"></script>
 <!-- Auto-initializes on DOMContentLoaded -->
@@ -101,6 +127,65 @@ desc = describe_appearance("7xKXqR...")
 
 ---
 
+## Rendering Modes
+
+### Full Detail vs Simplified
+
+SolFaces automatically adjusts detail based on size:
+
+- **Full detail** (size >= 48): Gradient fills, specular highlights on eyes, cheek blush, chin shadow, face glow, eyelid strokes, jawline hints.
+- **Simplified** (size < 48): Flat shapes optimized for small sizes — no gradients, no cheeks, no specular.
+
+Override with the `detail` option:
+
+```ts
+renderSolFaceSVG("7xKXqR...", { detail: "full" });    // Force full detail at any size
+renderSolFaceSVG("7xKXqR...", { detail: "simplified" }); // Force simplified
+renderSolFaceSVG("7xKXqR...", { detail: "auto" });     // Default — based on size
+```
+
+### Flat Mode
+
+Disable all gradients globally. Useful for print, email clients, or minimal UIs:
+
+```ts
+import { flatTheme } from "solfaces/themes";
+
+renderSolFaceSVG("7xKXqR...", { theme: flatTheme });
+// Zero <linearGradient> or <radialGradient> elements in output
+```
+
+Or set `flat: true` on any theme:
+
+```ts
+renderSolFaceSVG("7xKXqR...", { theme: { flat: true } });
+```
+
+### Pixel Art Mode (React Only)
+
+Renders the SVG at a low pixel density then scales up with `image-rendering: pixelated`:
+
+```tsx
+import { pixelTheme, pixelRetroTheme, pixelCleanTheme } from "solfaces/themes";
+
+<SolFace walletAddress="7xKXqR..." theme={pixelTheme} />       // 16px density, rounded
+<SolFace walletAddress="7xKXqR..." theme={pixelRetroTheme} />  // 12px + scanlines + shadow
+<SolFace walletAddress="7xKXqR..." theme={pixelCleanTheme} />  // 24px, clean
+```
+
+### Liquid Glass Mode (React Only)
+
+Backdrop-blur glass effect with specular highlights and rim lighting:
+
+```tsx
+import { glassTheme, glassDarkTheme } from "solfaces/themes";
+
+<SolFace walletAddress="7xKXqR..." theme={glassTheme} />
+<SolFace walletAddress="7xKXqR..." theme={glassDarkTheme} />
+```
+
+---
+
 ## AI Agent Identity
 
 SolFaces gives AI agents a visual identity tied to their wallet. The `describeAppearance()` function generates natural language descriptions agents can use in system prompts to know and reference what they look like.
@@ -112,11 +197,11 @@ import { agentAppearancePrompt } from "solfaces";
 
 const appearance = agentAppearancePrompt("7xKXqR...", "Atlas");
 // → "My visual identity is a SolFace avatar (ID: a3f2b1c0) derived from
-//    my wallet address. I'm Atlas. I have a round face with light peach skin,
-//    wide and expressive blue eyes with elegantly arched eyebrows, and tall,
-//    spiky Solana mint green hair. I'm wearing round glasses. I have a
-//    confident smirk. This appearance is deterministic — anyone who looks up
-//    my wallet will see the same face."
+//    my wallet address. I'm Atlas. I have a squircle face with warm golden skin,
+//    almond-shaped hazel eyes with gently curved eyebrows, and flowing
+//    auburn wavy hair. I'm wearing aviator sunglasses. I have a playful grin.
+//    This appearance is deterministic — anyone who looks up my wallet will
+//    see the same face."
 
 const systemPrompt = `You are Atlas, a DeFi trading agent. ${appearance}`;
 ```
@@ -134,11 +219,11 @@ describeAppearance("7xKXqR...", { format: "paragraph", perspective: "first", nam
 
 // Structured (for data display)
 describeAppearance("7xKXqR...", { format: "structured" });
-// → "Face: round\nSkin: light peach\nEyes: wide and expressive, blue\n..."
+// → "Face: squircle\nSkin: warm golden\nEyes: almond-shaped, hazel\n..."
 
 // Compact (for alt text, captions)
 describeAppearance("7xKXqR...", { format: "compact" });
-// → "round face, light peach skin, blue wide eyes, spiky mint hair, round glasses, smirking"
+// → "squircle face, warm golden skin, hazel almond eyes, wavy auburn hair, aviator sunglasses, grinning"
 ```
 
 ### Alt Text & Accessibility
@@ -147,7 +232,7 @@ describeAppearance("7xKXqR...", { format: "compact" });
 import { solFaceAltText } from "solfaces";
 
 const alt = solFaceAltText("7xKXqR...");
-// → "SolFace avatar: round face, light peach skin, blue wide eyes, ..."
+// → "SolFace avatar: squircle face, warm golden skin, hazel almond eyes, ..."
 ```
 
 ### Python (AI Agent Backends)
@@ -206,36 +291,69 @@ const dataUrl = await renderSolFacePNGDataURL("7xKXqR...", { pngSize: 256 });
 
 ## Themes
 
-SolFaces is fully customizable to your UI. Every visual element — skin, eyes, hair, mouth, eyebrows, nose, accessories, background, border, and even eye white/teeth color — can be themed globally or overridden per instance. Use a preset, extend one, or build your own from scratch. You can also use `colorOverrides` to change individual colors on a specific avatar without affecting the theme.
+SolFaces ships with 11 preset themes. Themes control colors, gradients, borders, rendering modes, and more.
 
 ### Available Presets
 
-| Theme | Description |
-|-------|-------------|
-| `solanaTheme` | Default — vibrant Solana colors (#14F195, #9945FF) |
-| `darkTheme` | Muted tones on dark backgrounds |
-| `lightTheme` | Soft pastels for white/light UIs |
-| `monoTheme` | Grayscale only — minimal interfaces |
-| `neonTheme` | High-contrast cyberpunk vibes |
-| `jupiterTheme` | Matches Jupiter aggregator's palette |
-| `phantomTheme` | Phantom wallet's purple style |
-| `circleTheme` | Full border-radius for circular avatars |
+| Theme | Description | Works In |
+|-------|-------------|----------|
+| `default` | Base look with gradient-rich rendering — no overrides | All renderers |
+| `dark` | Dark backgrounds with muted tones and subtle border | All renderers |
+| `light` | Soft pastel backgrounds with rounded corners | All renderers |
+| `mono` | Full grayscale — all colors replaced with grays | All renderers |
+| `flat` | Disables all gradients — flat fill colors only | All renderers |
+| `transparent` | Transparent background with flat rendering | All renderers |
+| `glass` | Liquid glass effect with backdrop blur and specular highlights | React only |
+| `glassDark` | Dark variant of liquid glass with deeper blur | React only |
+| `pixel` | Pixel art mode at 16px density with rounded corners | React only |
+| `pixelRetro` | Retro pixel art with scanlines and drop shadow | React only |
+| `pixelClean` | Clean pixel art at 24px density | React only |
+
+### Using Themes
+
+```ts
+import { renderSolFaceSVG } from "solfaces";
+import { darkTheme } from "solfaces/themes";
+
+const svg = renderSolFaceSVG("7xKXqR...", { theme: darkTheme });
+```
 
 ### Custom Themes
 
+Every visual element is customizable through the theme system — color palettes, individual colors, rendering toggles, layout, and more. All fields are optional; only override what you need.
+
 ```ts
+import type { SolFaceTheme } from "solfaces";
+
 const myTheme: SolFaceTheme = {
-  skinColors: ["#ffd5b0", "#f4c794", "#e0a370", "#c68642", "#8d5524", "#4a2c17"],
-  eyeColors: ["#333", "#4a80c4", "#5a9a5a"],
-  hairColors: ["#1a1a1a", "#6b3a2a", "#d4a844", "#ff6b6b", "#4ecdc4", "#45b7d1"],
-  bgColors: ["#1a1b23", "#2d1b69", "#0a2463"],
+  // Color palettes (arrays — one color per trait variant)
+  skinColors: ["#fce4d4", "#f5d0b0", "#e8b88a", "#d4956a", "#b5724a", "#8d5524", "#6b3f1d", "#4a2c17", "#3a1f10", "#2a1008"],
+  eyeColors: ["#333", "#4a80c4", "#5a9a5a", "#c89430", "#8a8a8a"],
+  hairColors: ["#1a1a1a", "#4a3728", "#8b6b4a", "#c44a20", "#d4a844", "#6090e0", "#14F195", "#e040c0", "#ff6b6b", "#4ecdc4"],
+  bgColors: ["#14F195", "#4a90e2", "#9945FF", "#f0e68c", "#e06070", "#ff8c42", "#5bc0be", "#8338ec", "#ff006e", "#3a86ff"],
+
+  // Individual color overrides
   mouthColor: "#e06070",
   eyebrowColor: "#aaa",
-  accessoryColor: "#888",
-  eyeWhiteColor: "#e0e0e0",    // Sclera color (great for dark themes)
-  noseColor: "#c68642aa",       // Nose color (defaults to skin + transparency)
+  accessoryColor: "#888",         // Default glasses/earring/headband color
+  eyeWhiteColor: "#e0e0e0",      // Sclera + teeth color (important for dark themes)
+  noseColor: "#c68642aa",         // Nose color (defaults to skin-derived)
+  glassesColor: "#333",           // Glasses frame color (overrides accessoryColor)
+  earringColor: "#ffd700",        // Earring color (overrides accessoryColor)
+  headbandColor: "#e04080",       // Headband color (overrides accessoryColor)
+
+  // Rendering control
+  flat: false,                    // Set true to disable all gradients
+  cheekEnabled: true,             // Enable/disable cheek blush
+  cheekColor: "#ff8080",          // Custom cheek color
+  cheekOpacity: 0.3,              // Cheek blush opacity
+  skinOpacity: 1,                 // Skin fill opacity
+  shadowEnabled: true,            // Enable/disable chin shadow
+  glowIntensity: 0.15,           // Face glow strength
+
+  // Layout
   bgOpacity: 1,
-  bgRadius: 999,
+  bgRadius: 14,
   border: { color: "#14F195", width: 2 },
 };
 ```
@@ -248,25 +366,98 @@ import { getPresetTheme } from "solfaces/themes";
 const myTheme = getPresetTheme("dark", {
   bgRadius: 999,
   border: { color: "#14F195", width: 1 },
+  eyeWhiteColor: "#d0c8c0",  // Warmer eye whites for dark mode
 });
 ```
 
-### Per-Instance Color Overrides
+### Theme Field Reference
 
-Override any color on a specific avatar without changing the global theme:
+**Color palettes** (arrays — one per trait variant):
 
-```tsx
-// React
-<SolFace walletAddress="7xKXqR..." colorOverrides={{ hair: "#ff0000", bg: "#000" }} />
+| Field | Type | What it controls |
+|-------|------|-----------------|
+| `skinColors` | `string[]` | 10 skin tone colors |
+| `eyeColors` | `string[]` | 5 iris/pupil colors |
+| `hairColors` | `string[]` | 10 hair fill colors |
+| `bgColors` | `string[]` | 10 background fill colors |
 
-// String renderer
-renderSolFaceSVG("7xKXqR...", {
-  theme: darkTheme,
-  colorOverrides: { skin: "#ffd5b0", eyes: "#00ff00", accessory: "#gold" },
-});
-```
+**Individual color overrides:**
 
-Available override keys: `skin`, `eyes`, `hair`, `bg`, `mouth`, `eyebrow`, `accessory`, `nose`, `eyeWhite`.
+| Field | Type | What it controls |
+|-------|------|-----------------|
+| `mouthColor` | `string` | Mouth stroke/fill |
+| `eyebrowColor` | `string` | Eyebrow stroke |
+| `accessoryColor` | `string` | Default accessory color (glasses, earring, headband) |
+| `eyeWhiteColor` | `string` | Sclera (eye white) and teeth color — set for dark themes |
+| `noseColor` | `string` | Nose color (defaults to skin-derived + transparency) |
+| `glassesColor` | `string` | Glasses frame color (overrides accessoryColor) |
+| `earringColor` | `string` | Earring color (overrides accessoryColor) |
+| `headbandColor` | `string` | Headband color (overrides accessoryColor) |
+
+**Rendering control:**
+
+| Field | Type | What it controls |
+|-------|------|-----------------|
+| `flat` | `boolean` | Disable all gradients (flat fill colors only) |
+| `cheekEnabled` | `boolean` | Enable/disable cheek blush |
+| `cheekColor` | `string` | Custom cheek color |
+| `cheekOpacity` | `number` | Cheek blush opacity (0-1) |
+| `skinOpacity` | `number` | Skin fill opacity (0-1) |
+| `shadowEnabled` | `boolean` | Enable/disable chin shadow and face overlays |
+
+**Layout:**
+
+| Field | Type | What it controls |
+|-------|------|-----------------|
+| `bgOpacity` | `number` | Background opacity (0-1) |
+| `bgRadius` | `number` | SVG rect border radius (999 = circle) |
+| `border` | `{ color, width }` | Optional border around avatar |
+
+### Pixel Art Customization (React Only)
+
+All `_pixel*` fields are React-only. Set `_pixel: true` to enable pixel art mode.
+
+| Field | Type | Default | What it controls |
+|-------|------|---------|-----------------|
+| `_pixel` | `boolean` | `false` | Enable pixel art mode |
+| `_pixelDensity` | `number` | `16` | Render resolution before upscale (lower = blockier) |
+| `_pixelRounded` | `boolean` | `true` | Rounded corners on pixel container |
+| `_pixelOutline` | `boolean` | `false` | Draw outline around pixel art |
+| `_pixelOutlineColor` | `string` | `"#000"` | Outline color |
+| `_pixelOutlineWidth` | `number` | `1` | Outline width in pixels |
+| `_pixelContrast` | `number` | — | CSS contrast filter |
+| `_pixelSaturation` | `number` | — | CSS saturation filter |
+| `_pixelBrightness` | `number` | — | CSS brightness filter |
+| `_pixelScanlines` | `boolean` | `false` | Horizontal scanline overlay |
+| `_pixelScanlineOpacity` | `number` | `0.08` | Scanline opacity |
+| `_pixelScanlineSpacing` | `number` | `2` | Scanline spacing in pixels |
+| `_pixelGrid` | `boolean` | `false` | Pixel grid overlay |
+| `_pixelGridOpacity` | `number` | — | Grid opacity |
+| `_pixelGridColor` | `string` | — | Grid color |
+| `_pixelShadow` | `boolean` | `false` | Drop shadow behind pixel art |
+| `_pixelShadowColor` | `string` | `"rgba(0,0,0,0.3)"` | Shadow color |
+| `_pixelShadowOffset` | `number` | `2` | Shadow offset in pixels |
+
+### Liquid Glass Customization (React Only)
+
+All glass fields are React-only. Set `_glass: true` to enable liquid glass mode.
+
+| Field | Type | Default | What it controls |
+|-------|------|---------|-----------------|
+| `_glass` | `boolean` | `false` | Enable liquid glass mode |
+| `_blurRadius` | `number` | `12` | Backdrop blur radius |
+| `_saturate` | `number` | `1.8` | Backdrop saturation multiplier |
+| `_tintColor` | `string` | `"rgba(255,255,255,1)"` | Glass tint color |
+| `_tintOpacity` | `number` | `0.12` | Glass tint opacity |
+| `_borderColor` | `string` | `"rgba(255,255,255,0.25)"` | Glass border color |
+| `_borderWidth` | `number` | `1` | Glass border width |
+| `_borderOpacity` | `number` | `0.25` | Glass border opacity |
+| `_specularColor` | `string` | `"rgba(255,255,255,1)"` | Specular highlight color |
+| `_specularOpacity` | `number` | `0.25` | Specular highlight strength |
+| `_specularEnd` | `number` | `50` | Specular gradient end (%) |
+| `_lightAngle` | `number` | `135` | Light source angle (degrees) |
+| `_rimIntensity` | `number` | `0.08` | Rim lighting intensity |
+| `_shadow` | `string` | `"0 8px 32px rgba(0,0,0,0.12)"` | CSS box-shadow |
 
 ---
 
@@ -327,14 +518,7 @@ import {
 
 ### Skill File for AI Agents
 
-SolFaces includes a comprehensive `skill.md` that teaches AI agents how to integrate, customize, and use SolFaces. Feed it to any agent (Claude, GPT, custom bots) as context:
-
-- How to install and import for any platform
-- React component usage with themes, animations, and styling
-- Server-side rendering and API route patterns
-- Custom theme creation to match any UI
-- Bot integration (Discord, Telegram)
-- All 5 tool definitions with parameters and usage guidance
+SolFaces includes a comprehensive `skill.md` that teaches AI agents how to integrate, customize, and use SolFaces. Feed it to any agent (Claude, GPT, custom bots) as context.
 
 ---
 
@@ -356,7 +540,7 @@ Templates included for: **Next.js App Router**, **Express**, **Hono (Cloudflare 
 
 ## Python Port
 
-Full Python implementation with identical trait generation to JavaScript. Zero dependencies.
+Full Python implementation with identical trait generation to JavaScript. Zero dependencies. Includes gradient-rich rendering matching the TypeScript renderer.
 
 ```python
 from solfaces import generate_traits, render_svg, describe_appearance
@@ -375,7 +559,10 @@ python solfaces.py 7xKXqR... --svg              # Output SVG
 python solfaces.py 7xKXqR... --json             # Output JSON
 python solfaces.py 7xKXqR... --describe         # Natural language
 python solfaces.py 7xKXqR... --svg --size 512   # Custom size
+python solfaces.py 7xKXqR... --svg --flat        # Flat mode (no gradients)
 ```
+
+> **Note:** Pixel art and liquid glass modes are React-only (CSS-dependent) and not available in the Python port.
 
 ---
 
@@ -390,6 +577,8 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 <div data-solface="7xKXqR..." data-solface-size="48"></div>
 <div data-solface="DRpbCBMx..." data-solface-size="48" data-solface-theme="dark"></div>
 <div data-solface="9WzDXwBb..." data-solface-blink="true"></div>
+<div data-solface="Abc123..." data-solface-flat="true"></div>
+<div data-solface="Def456..." data-solface-detail="full"></div>
 
 <!-- Global API available as window.SolFaces -->
 <script>
@@ -408,22 +597,30 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 | Function | Returns | Description |
 |----------|---------|-------------|
 | `generateTraits(wallet, overrides?)` | `SolFaceTraits` | Deterministic traits from wallet |
+| `getTraitLabels(traits)` | `Record<string, string>` | Human-readable trait names |
+| `traitHash(wallet)` | `string` | 8-char hex hash |
+| `resolveTheme(name?, themes?)` | `SolFaceTheme \| undefined` | Look up theme by name from a map |
+| `mergeTheme(base, overrides)` | `SolFaceTheme` | Merge two themes |
+| `effectiveAccessory(traits)` | `number` | Accessory index (earring suppressed for long/bob hair) |
 | `renderSolFaceSVG(wallet, options?)` | `string` | Raw SVG markup |
 | `renderSolFaceDataURI(wallet, options?)` | `string` | Data URI for `<img>` tags |
 | `renderSolFaceBase64(wallet, options?)` | `string` | Base64 data URI |
 | `renderSolFacePNG(wallet, options?)` | `Promise<Buffer>` | PNG buffer (Node) |
 | `renderSolFacePNGBrowser(wallet, options?)` | `Promise<Blob>` | PNG blob (browser) |
+| `renderSolFacePNGDataURL(wallet, options?)` | `Promise<string>` | PNG data URL (browser) |
 | `describeAppearance(wallet, options?)` | `string` | Natural language description |
+| `describeTraits(traits, options?)` | `string` | Describe from pre-generated traits |
 | `agentAppearancePrompt(wallet, name?)` | `string` | System prompt for AI agents |
 | `solFaceAltText(wallet)` | `string` | Accessible alt text |
-| `getTraitLabels(traits)` | `Record<string, string>` | Human-readable trait names |
-| `traitHash(wallet)` | `string` | 8-char hex hash |
+| `hexToRgb(hex)` | `[r, g, b]` | Parse hex color |
+| `rgbToHex(r, g, b)` | `string` | Convert RGB to hex |
+| `darken(hex, pct)` | `string` | Darken a color |
+| `lighten(hex, pct)` | `string` | Lighten a color |
+| `blend(a, b, t)` | `string` | Blend two colors |
+| `luminance(hex)` | `number` | Perceived luminance (0-255) |
+| `deriveSkinColors(skinHex)` | `DerivedColors` | Full skin-luminance color derivation |
 | `SOLFACE_TOOLS` | `SolFaceTool[]` | All 5 agent tool definitions |
-| `handleToolCall(name, params)` | `Promise<unknown>` | Universal agent tool dispatcher |
-| `allToolsOpenAI()` | `OpenAITool[]` | Tools in OpenAI format |
-| `allToolsAnthropic()` | `AnthropicTool[]` | Tools in Anthropic format |
-| `allToolsVercelAI()` | `Record<string, VercelAITool>` | Tools in Vercel AI SDK format |
-| `allToolsMCP()` | `MCPTool[]` | Tools in MCP format |
+| `handleToolCall(name, params)` | `unknown` | Universal agent tool dispatcher |
 
 ### React Component Props
 
@@ -431,25 +628,76 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 <SolFace
   walletAddress="7xKXqR..."       // Required
   size={48}                         // Default: 64
-  enableBlink={true}                // Default: false — or { duration: 2, delay: 0.5 }
+  enableBlink={true}                // Default: false — or custom timing below
   theme={darkTheme}                 // Optional theme
+  detail="full"                     // "full" | "simplified" | "auto"
   traitOverrides={{ hairStyle: 0 }} // Pin specific traits
   colorOverrides={{ hair: "#ff0000" }} // Override individual colors
   className="my-avatar"             // CSS class
   style={{ borderRadius: "50%" }}   // Inline styles
-  onClick={handleClick}             // All SVG props supported
+  onClick={handleClick}             // All standard SVG element props supported
+/>
+
+// Custom blink timing
+<SolFace
+  walletAddress="7xKXqR..."
+  enableBlink={{ duration: 3, delay: 1 }}  // 3s cycle, 1s initial delay
 />
 ```
+
+### RenderOptions
+
+```ts
+interface RenderOptions {
+  size?: number;                           // Default: 64
+  theme?: SolFaceTheme;                    // Theme object
+  enableBlink?: boolean | {                // Blink animation (boolean or custom timing)
+    duration?: number;                     //   Blink cycle duration in seconds (default: 4)
+    delay?: number;                        //   Initial delay in seconds (default: 0)
+  };
+  detail?: "full" | "simplified" | "auto"; // Detail level (default: "auto")
+  traitOverrides?: Partial<SolFaceTraits>; // Pin specific traits
+  className?: string;                      // CSS class on SVG element
+  colorOverrides?: {                       // Override individual colors per instance
+    skin?: string;
+    eyes?: string;
+    hair?: string;
+    bg?: string;
+    mouth?: string;
+    eyebrow?: string;
+    accessory?: string;
+    nose?: string;
+    eyeWhite?: string;
+  };
+}
+```
+
+### Per-Instance Color Overrides
+
+Override any color on a specific avatar without changing the global theme:
+
+```tsx
+// React
+<SolFace walletAddress="7xKXqR..." colorOverrides={{ hair: "#ff0000", bg: "#000" }} />
+
+// String renderer
+renderSolFaceSVG("7xKXqR...", {
+  theme: darkTheme,
+  colorOverrides: { skin: "#ffd5b0", eyes: "#00ff00" },
+});
+```
+
+Available keys: `skin`, `eyes`, `hair`, `bg`, `mouth`, `eyebrow`, `accessory`, `nose`, `eyeWhite`.
 
 ### Import Paths
 
 | Path | Contents | React? |
 |------|----------|--------|
-| `solfaces` | Core + themes + describe + rasterize + agent tools | No |
-| `solfaces/core` | Engine only | No |
-| `solfaces/react` | React component | Yes |
-| `solfaces/vanilla` | DOM helpers | No |
-| `solfaces/themes` | Preset themes | No |
+| `solfaces` | Core + colors + themes + describe + rasterize + agent tools | No |
+| `solfaces/core` | Engine only (traits, renderer, colors, describe) | No |
+| `solfaces/react` | React component (base + pixel + glass modes) | Yes |
+| `solfaces/vanilla` | DOM helpers (mount, setImg, autoInit) | No |
+| `solfaces/themes` | 11 preset themes | No |
 | `solfaces/agent` | AI agent tool definitions + framework adapters | No |
 | `solfaces/cdn` | IIFE for `<script>` tags | No |
 
@@ -459,21 +707,25 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 
 | Trait | Variants | Options |
 |-------|----------|---------|
-| Face Shape | 4 | Round, Square, Oval, Hexagon |
-| Skin Color | 6 | Light → Dark (6 tones) |
-| Eye Style | 8 | Round, Dots, Almond, Wide, Sleepy, Winking, Lashes, Narrow |
-| Eye Color | 5 | Dark Brown, Blue, Green, Amber, Gray |
-| Eyebrows | 5 | None, Thin, Thick, Arched, Angled |
-| Nose | 4 | None, Dot, Triangle, Button |
-| Mouth | 6 | Smile, Neutral, Grin, Open, Smirk, Wide Smile |
-| Hair Style | 8 | Bald, Short, Spiky, Swept, Mohawk, Long, Bob, Buzz |
-| Hair Color | 8 | Black, Brown, Blonde, Ginger, Neon Lime, Neon Blue, Solana Mint, Neon Magenta |
-| Accessory | 6 | None (×2), Round Glasses, Square Glasses, Earring, Bandana |
-| Background | 5 | Lime, Blue, Solana Mint, Sand, Red |
+| Face Shape | 4 | Squircle (all — preserved for PRNG ordering) |
+| Skin Color | 10 | Porcelain, Ivory, Fair, Light, Sand, Golden, Warm, Caramel, Brown, Deep |
+| Eye Style | 8 | Round, Minimal, Almond, Wide, Relaxed, Joyful, Bright, Gentle |
+| Eye Color | 5 | Chocolate, Sky, Emerald, Hazel, Storm |
+| Eyebrows | 5 | Wispy, Straight, Natural, Arched, Angled |
+| Nose | 4 | Shadow, Button, Soft, Nostrils |
+| Mouth | 8 | Smile, Calm, Happy, Oh, Smirk, Grin, Flat, Pout |
+| Hair Style | 10 | Bald, Short, Curly, Side Sweep, Puff, Long, Bob, Buzz, Wavy, Topknot |
+| Hair Color | 10 | Black, Espresso, Walnut, Honey, Copper, Silver, Charcoal, Burgundy, Strawberry, Ginger |
+| Accessory | 10 | None, Beauty Mark, Round Glasses, Rect Glasses, Earring, Headband, Freckles, Stud Earrings, Aviators, Band-Aid |
+| Background | 10 | Rose, Olive, Sage, Fern, Mint, Ocean, Sky, Lavender, Orchid, Blush |
 
-**Total unique combinations: ~221,184,000**
+**Total unique combinations: ~2,560,000,000**
 
 Algorithm: **djb2 hash** → **mulberry32 PRNG** → sequential trait sampling. Sub-millisecond. Deterministic across JS and Python.
+
+### Color Derivation
+
+v2 introduces skin-luminance-driven color derivation. Every face's shadow colors, highlights, cheek blush, lip color, nose shading, ear colors, brow colors, and eye white adaptation are automatically computed from the skin tone's luminance. This creates cohesive, natural-looking faces without manual palette tuning.
 
 ---
 
@@ -483,18 +735,19 @@ Algorithm: **djb2 hash** → **mulberry32 PRNG** → sequential trait sampling. 
 solfaces/
 ├── src/
 │   ├── core/
+│   │   ├── colors.ts      # Color math: darken, lighten, blend, deriveSkinColors
 │   │   ├── traits.ts       # Types, palettes, theme system, trait generation
-│   │   ├── renderer.ts     # SVG string renderer, data URI, base64
+│   │   ├── renderer.ts     # SVG string renderer (gradient-rich, detail levels)
 │   │   ├── describe.ts     # Natural language descriptions for AI agents
 │   │   ├── rasterize.ts    # PNG output (sharp / resvg / canvas)
 │   │   └── index.ts
 │   ├── react/
-│   │   ├── SolFace.tsx     # React component
+│   │   ├── SolFace.tsx     # React component (base + pixel art + liquid glass)
 │   │   └── index.ts
 │   ├── vanilla/
 │   │   └── index.ts        # mountSolFace, setSolFaceImg, autoInit
 │   ├── themes/
-│   │   ├── presets.ts      # 8 preset themes
+│   │   ├── presets.ts      # 11 preset themes
 │   │   └── index.ts
 │   ├── agent/
 │   │   ├── tools.ts        # 5 canonical tool definitions + handlers
@@ -504,10 +757,29 @@ solfaces/
 │   ├── api-templates.ts    # Copy-paste route handlers
 │   └── index.ts
 ├── python/
-│   └── solfaces.py         # Full Python port (zero deps)
+│   └── solfaces.py         # Full Python port (zero deps, gradient rendering)
 ├── package.json
 └── tsup.config.ts
 ```
+
+### Key Design Decisions
+
+- **`colors.ts` is the single source of truth** for all color math. Both `renderer.ts` and `SolFace.tsx` import from it, preventing renderer drift.
+- **`effectiveAccessory()`** handles earring suppression: long and bob hairstyles suppress earring accessories.
+- **`_` prefix** on theme fields marks React-only features (pixel, glass). The string renderer ignores these.
+- **Detail levels** are resolved at render time: `"auto"` → full if size >= 48, simplified otherwise.
+
+---
+
+## Migration from v1
+
+v2.0.0 is a breaking release:
+
+- **All faces change.** Trait ranges expanded (skin 6→10, mouth 6→8, hair 8→10, accessories 6→10, bg 5→10), so every wallet generates a different face than in v1.
+- **Old themes removed.** `solana`, `neon`, `jupiter`, `phantom`, `circle` themes are gone. Use `dark`, `light`, `mono`, `flat`, `transparent`, or the new `glass`/`pixel` themes.
+- **New rendering engine.** Gradient-rich rendering with skin-luminance-driven colors, ears, hair-back layers, and face overlays.
+- **New theme fields.** `flat`, `cheekEnabled`, `shadowEnabled`, `glowIntensity`, and React-only `_glass*`/`_pixel*` fields.
+- **`colorOverrides` still supported.** Per-instance color overrides work the same as v1.
 
 ---
 

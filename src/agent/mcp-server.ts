@@ -10,7 +10,7 @@
 // Claude Code config (~/.claude/settings.json):
 //   {
 //     "mcpServers": {
-//       "solfaces": { "command": "npx", "args": ["solfaces-mcp"] }
+//       "solfaces": { "command": "npx", "args": ["-y", "solfaces-mcp"] }
 //     }
 //   }
 // ═══════════════════════════════════════════════════════════════
@@ -52,7 +52,7 @@ function handleRequest(req: MCPRequest): MCPResponse | null {
         capabilities: { tools: {} },
         serverInfo: {
           name: "solfaces",
-          version: "1.0.0",
+          version: "2.0.0",
         },
       },
     };

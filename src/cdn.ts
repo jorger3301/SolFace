@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// SOLFACES — CDN Bundle (IIFE / UMD)
+// SOLFACES v2 — CDN Bundle (IIFE / UMD)
 // Single <script> tag integration. No build step required.
 //
 // Usage:
@@ -14,9 +14,10 @@
 //   </script>
 // ═══════════════════════════════════════════════════════════════
 
-import { generateTraits, getTraitLabels, traitHash, resolveTheme } from "./core/traits";
+import { generateTraits, getTraitLabels, traitHash, resolveTheme, effectiveAccessory } from "./core/traits";
 import { renderSolFaceSVG, renderSolFaceDataURI, renderSolFaceBase64 } from "./core/renderer";
 import { describeAppearance, solFaceAltText, agentAppearancePrompt } from "./core/describe";
+import { hexToRgb, rgbToHex, darken, lighten, blend, luminance, deriveSkinColors } from "./core/colors";
 import { PRESET_THEMES, getPresetTheme } from "./themes/presets";
 
 import type { SolFaceTheme, RenderOptions } from "./core/traits";
@@ -26,7 +27,7 @@ import type { SolFaceTheme, RenderOptions } from "./core/traits";
 function mountSolFace(
   element: HTMLElement | string,
   walletAddress: string,
-  options?: RenderOptions
+  options?: RenderOptions,
 ): () => void {
   const el = typeof element === "string"
     ? document.querySelector<HTMLElement>(element)
@@ -44,7 +45,7 @@ function mountSolFace(
 function setSolFaceImg(
   img: HTMLImageElement | string,
   walletAddress: string,
-  options?: RenderOptions
+  options?: RenderOptions,
 ): void {
   const el = typeof img === "string"
     ? document.querySelector<HTMLImageElement>(img)
@@ -64,12 +65,25 @@ function autoInit(root: HTMLElement | Document = document): void {
     const size = parseInt(el.getAttribute("data-solface-size") ?? "64", 10);
     const blink = el.getAttribute("data-solface-blink") === "true";
     const themeName = el.getAttribute("data-solface-theme") as string | null;
+    const flat = el.getAttribute("data-solface-flat") === "true";
+    const detail = el.getAttribute("data-solface-detail") as "full" | "simplified" | "auto" | null;
 
-    const theme = themeName && themeName in PRESET_THEMES
+    let theme = themeName && themeName in PRESET_THEMES
       ? PRESET_THEMES[themeName as keyof typeof PRESET_THEMES]
       : undefined;
 
-    mountSolFace(el, wallet, { size, enableBlink: blink, theme });
+    if (flat && theme) {
+      theme = { ...theme, flat: true };
+    } else if (flat) {
+      theme = { flat: true };
+    }
+
+    mountSolFace(el, wallet, {
+      size,
+      enableBlink: blink,
+      theme,
+      detail: detail ?? "auto",
+    });
   });
 }
 
@@ -81,6 +95,7 @@ const SolFaces = {
   getTraitLabels,
   traitHash,
   resolveTheme,
+  effectiveAccessory,
 
   // Rendering
   renderSVG: renderSolFaceSVG,
@@ -100,6 +115,9 @@ const SolFaces = {
   // Themes
   themes: PRESET_THEMES,
   getTheme: getPresetTheme,
+
+  // Color utilities
+  colors: { hexToRgb, rgbToHex, darken, lighten, blend, luminance, deriveSkinColors },
 };
 
 // Attach to window for <script> tag usage
@@ -116,7 +134,6 @@ if (typeof document !== "undefined") {
       }
     });
   } else {
-    // DOM already ready
     if (document.querySelector("[data-solface]")) {
       autoInit();
     }
