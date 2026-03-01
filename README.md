@@ -22,10 +22,9 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 - **Deterministic** — Same wallet always produces the same avatar. No database needed.
 - **Zero dependencies** — Core engine has no runtime dependencies.
 - **~2.56B unique faces** — 11 traits with expanded ranges = massive combination space.
+- **11 built-in themes** — Default, Dark, Light, Mono, Flat, Transparent, plus 3 Pixel and 2 Glass themes (React).
 - **Gradient-rich rendering** — Skin-luminance-driven colors, specular highlights, cheek blush, gradient hair, glow overlays.
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
-- **Pixel art mode** — Retro pixelated rendering with optional scanlines (React).
-- **Liquid glass mode** — Backdrop-blur glass effect with rim lighting (React).
 - **Flat mode** — Disable all gradients for simplified rendering.
 - **Detail levels** — Full detail (gradients, specular, cheeks) at size >= 48, simplified below.
 - **Fully customizable** — Every visual element is customizable: 4 color palettes, 8 individual color overrides, 9 per-instance color keys, rendering toggles, layout controls, blink timing, and 30+ React-only pixel/glass fields. No visual element is locked — if you can see it, you can theme it.
