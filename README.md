@@ -337,7 +337,13 @@ import { glassTheme, glassDarkTheme } from "solfaces/themes";
 
 ## AI Agent Identity
 
-AI trading bots, autonomous agents, and on-chain programs are becoming users — they need a visual identity, a personality, and a recognizable presence. SolFaces gives every agent a deterministic face tied to their wallet, plus natural language self-descriptions they can use in system prompts to know and reference what they look like.
+Any Solana trading bot or autonomous agent just needs its wallet address and it instantly gets:
+
+- **A face** — unique, deterministic SVG avatar (2.56B combinations)
+- **A name** — `"Fierce Sortie"`, `"Waving Mistral"`, etc. — like a real first/last name
+- **Self-awareness** — a first-person description it can use in its system prompt to know what it looks like and introduce itself
+
+No registration, no storage, no API calls. Just math from the wallet address. Every bot on Solana can have a recognizable identity that's consistent everywhere — on-chain, in Discord, Telegram, dashboards, leaderboards.
 
 ### System Prompt Integration
 
