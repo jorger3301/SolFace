@@ -21,7 +21,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 
 ## Why SolFaces?
 
-- **Deterministic** — Same wallet always produces the same avatar. No database needed.
+- **Deterministic** — Same wallet address always produces a unique avatar and name. No database needed.
 - **Zero dependencies** — Core engine has no runtime dependencies.
 - **~2.56B unique faces** — 11 traits with expanded ranges = massive combination space.
 - **SolNames** — Every wallet gets a deterministic, human-friendly name derived via SHA-256 (e.g. "SunnyIcon"). ~1M display names, ~65.5B unique tags.
