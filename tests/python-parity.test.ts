@@ -13,6 +13,7 @@ import {
   solFaceAltText,
   agentAppearancePrompt,
 } from "../src/core/describe";
+import { deriveName, deriveIdentity } from "../src/names";
 
 const WALLET = "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU";
 const PYTHON_DIR = resolve(import.meta.dirname ?? __dirname, "../python");
@@ -146,5 +147,81 @@ from solfaces import sol_face_alt_text
 print(sol_face_alt_text("${WALLET}"))
     `);
     expect(pyAlt).toBe(tsAlt);
+  });
+});
+
+describe("Python parity — SolNames derivation", () => {
+  const wallets = [
+    "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+    "7JfkjvMnwTvZNGNam2RgJ1BBxMpsqaQRaWmvejig7uCa",
+    "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+    "So11111111111111111111111111111111111111112",
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  ];
+
+  it("derive_name display format matches across all wallets", () => {
+    for (const w of wallets) {
+      const tsName = deriveName(w, "display");
+      const pyName = runPython(`
+from solfaces import derive_name
+print(derive_name("${w}", "display"))
+      `);
+      expect(pyName).toBe(tsName);
+    }
+  });
+
+  it("derive_name short format matches", () => {
+    for (const w of wallets) {
+      const tsName = deriveName(w, "short");
+      const pyName = runPython(`
+from solfaces import derive_name
+print(derive_name("${w}", "short"))
+      `);
+      expect(pyName).toBe(tsName);
+    }
+  });
+
+  it("derive_name tag format matches", () => {
+    for (const w of wallets) {
+      const tsName = deriveName(w, "tag");
+      const pyName = runPython(`
+from solfaces import derive_name
+print(derive_name("${w}", "tag"))
+      `);
+      expect(pyName).toBe(tsName);
+    }
+  });
+
+  it("derive_name full format matches", () => {
+    for (const w of wallets) {
+      const tsName = deriveName(w, "full");
+      const pyName = runPython(`
+from solfaces import derive_name
+print(derive_name("${w}", "full"))
+      `);
+      expect(pyName).toBe(tsName);
+    }
+  });
+
+  it("derive_identity hash matches", () => {
+    for (const w of wallets) {
+      const tsId = deriveIdentity(w);
+      const pyHash = runPython(`
+from solfaces import derive_identity
+print(derive_identity("${w}")["hash"])
+      `);
+      expect(pyHash).toBe(tsId.hash);
+    }
+  });
+
+  it("derive_identity discriminator matches", () => {
+    for (const w of wallets) {
+      const tsId = deriveIdentity(w);
+      const pyDisc = runPython(`
+from solfaces import derive_identity
+print(derive_identity("${w}")["discriminator"])
+      `);
+      expect(pyDisc).toBe(tsId.discriminator);
+    }
   });
 });

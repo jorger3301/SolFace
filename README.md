@@ -5,9 +5,9 @@
 [![license](https://img.shields.io/npm/l/solfaces)](https://github.com/jorger3301/SolFaces/blob/main/LICENSE)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/solfaces)](https://bundlephobia.com/package/solfaces)
 
-**Deterministic wallet avatars for the Solana ecosystem.**
+**Deterministic wallet avatars and names for the Solana ecosystem.**
 
-Every Solana wallet address generates a unique, consistent face — no API calls, no storage, no randomness. Same wallet = same face, everywhere, forever.
+Every Solana wallet address generates a unique, consistent face and a deterministic name — no API calls, no storage, no randomness. Same wallet = same face, same name, everywhere, forever.
 
 Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet needs a visual identity.
 
@@ -22,6 +22,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 - **Deterministic** — Same wallet always produces the same avatar. No database needed.
 - **Zero dependencies** — Core engine has no runtime dependencies.
 - **~2.56B unique faces** — 11 traits with expanded ranges = massive combination space.
+- **SolNames** — Every wallet gets a deterministic, human-friendly name derived via SHA-256 (e.g. "SunnyIcon"). ~1M display names, ~65.5B unique tags.
 - **11 built-in themes** — Default, Dark, Light, Mono, Flat, Transparent, plus 3 Pixel and 2 Glass themes (React).
 - **Gradient-rich rendering** — Skin-luminance-driven colors, specular highlights, cheek blush, gradient hair, glow overlays.
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
@@ -114,6 +115,24 @@ mountSolFace("#avatar", "7xKXqR...", { size: 48 });
 </script>
 ```
 
+### Name Derivation (SolNames)
+
+```ts
+import { deriveName, deriveIdentity } from "solfaces";
+
+deriveName("7xKXqR...");
+// → "SunnyIcon" (deterministic, SHA-256 derived)
+
+deriveName("7xKXqR...", "tag");
+// → "SunnyIcon#2f95" (unique identifier)
+
+deriveName("7xKXqR...", "full");
+// → "SunnyIcon-InfiniteOre" (formal contexts)
+
+const id = deriveIdentity("7xKXqR...");
+// → { short, name, tag, full, adjective, noun, hash, discriminator }
+```
+
 ### Node / SSR / Edge
 
 ```ts
@@ -126,12 +145,92 @@ const svg = renderSolFaceSVG("7xKXqR...", { size: 128 });
 ### Python
 
 ```python
-from solfaces import generate_traits, render_svg, describe_appearance
+from solfaces import generate_traits, render_svg, describe_appearance, derive_name
 
 traits = generate_traits("7xKXqR...")
 svg = render_svg("7xKXqR...", size=256)
 desc = describe_appearance("7xKXqR...")
+name = derive_name("7xKXqR...")
 ```
+
+---
+
+## SolNames — Deterministic Name Derivation
+
+Every wallet gets a deterministic, human-friendly name derived via SHA-256 hashing and curated word lists. Nothing like this exists on any blockchain — every other naming system (SNS, ENS, Unstoppable Domains) requires purchase. SolNames derives names automatically — zero registration, zero storage, just math.
+
+```
+Wallet: 7PjJ2AHq9BMXWYjt3qqeKwZVLXHYFPmHRYrMF6PpRySD
+        │
+        ↓
+SHA-256("solnames-v1:" + wallet) → 32 bytes
+        │
+        ├─→ Bytes 0-3: seed PRNG → adjective + noun
+        └─→ Bytes 8-9: hex discriminator → "2f95"
+
+Display:  WavingMistral
+Tag:      WavingMistral#2f95
+```
+
+### Name Formats
+
+| Format  | Example                      | Unique Names | Use Case                    |
+|---------|------------------------------|-------------|-----------------------------|
+| short   | "Waving"                     | 1,000       | Tight UIs, badges           |
+| display | "WavingMistral"              | ~1,000,000  | Default — profiles, feeds   |
+| tag     | "WavingMistral#2f95"         | ~65.5B      | Unique identifier           |
+| full    | "WavingMistral-InfiniteOre"  | ~1T         | Formal contexts             |
+
+### Usage
+
+```ts
+import { deriveName, deriveIdentity } from "solfaces";
+// or: import { deriveName } from "solfaces/names";
+
+deriveName("7xKXqR...");           // → "SunnyIcon" (display format)
+deriveName("7xKXqR...", "short");  // → "Sunny"
+deriveName("7xKXqR...", "tag");    // → "SunnyIcon#2f95"
+deriveName("7xKXqR...", "full");   // → "SunnyIcon-InfiniteOre"
+
+const id = deriveIdentity("7xKXqR...");
+// → { short, name, tag, full, adjective, noun, hash, discriminator }
+```
+
+### React Hook
+
+```tsx
+import { useSolName } from "solfaces/react";
+
+function Profile({ wallet }) {
+  const name = useSolName(wallet, "display");    // string
+  const identity = useSolName(wallet);            // full SolNameIdentity
+  return <span>{name}</span>;
+}
+```
+
+### Show Name with Avatar
+
+```tsx
+import { SolFace } from "solfaces/react";
+
+<SolFace walletAddress="7xKXqR..." showName />
+<SolFace walletAddress="7xKXqR..." showName namePosition="above" nameFormat="tag" />
+```
+
+### Validation
+
+```ts
+import { isValidSolName, parseSolName } from "solfaces/names";
+
+isValidSolName("SunnyIcon");         // true
+isValidSolName("SunnyIcon#2f95");    // true
+parseSolName("SunnyIcon#2f95");
+// → { adjective: "Sunny", noun: "Icon", discriminator: "2f95" }
+```
+
+- **1000 adjectives + 1000 nouns** — curated positive/neutral PascalCase words
+- **Same name everywhere** — TypeScript, Python, CDN, and server all produce identical output
+- **Blocked combinations** — offensive adjective+noun pairs are automatically skipped
 
 ---
 
@@ -495,9 +594,10 @@ const result = await handleToolCall("generate_solface_svg", {
 |------|-------------|
 | `generate_solface_svg` | Render SVG avatar from wallet address |
 | `describe_solface` | Natural language description of an avatar |
-| `get_solface_traits` | Raw trait data with labels and hash |
+| `get_solface_traits` | Raw trait data with labels, hash, and name |
 | `get_agent_identity` | System prompt snippet for AI agent identity |
 | `list_solface_themes` | List available preset themes |
+| `derive_solname` | Deterministic name from wallet via SHA-256 |
 
 ### MCP Server (Claude Code / Cursor)
 
@@ -526,7 +626,7 @@ import {
 
 ### Skill File for AI Agents
 
-SolFaces includes a comprehensive `skill.md` that teaches AI agents how to integrate, customize, and use SolFaces. Feed it to any agent (Claude, GPT, custom bots) as context.
+SolFaces includes a comprehensive `SKILL.md` (with 3 reference files in `reference/`) that teaches AI agents how to integrate, customize, and use SolFaces. Feed it to any agent (Claude, GPT, custom bots) as context.
 
 ---
 
@@ -551,11 +651,12 @@ Templates included for: **Next.js App Router**, **Express**, **Hono (Cloudflare 
 Full Python implementation with identical trait generation to JavaScript. Zero dependencies. Includes gradient-rich rendering matching the TypeScript renderer.
 
 ```python
-from solfaces import generate_traits, render_svg, describe_appearance
+from solfaces import generate_traits, render_svg, describe_appearance, derive_name
 
 traits = generate_traits("7xKXqR...")
 svg = render_svg("7xKXqR...", size=256)
 desc = describe_appearance("7xKXqR...")
+name = derive_name("7xKXqR...")
 prompt = agent_appearance_prompt("7xKXqR...", "Atlas")
 ```
 
@@ -594,6 +695,7 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
   SolFaces.setImg("#pfp", "7xKXqR...");
   const svg = SolFaces.renderSVG("7xKXqR...");
   const desc = SolFaces.describe("7xKXqR...");
+  const name = SolFaces.deriveName("7xKXqR...");
   const prompt = SolFaces.agentPrompt("7xKXqR...", "Atlas");
 </script>
 ```
@@ -604,6 +706,8 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 
 | Function | Returns | Description |
 |----------|---------|-------------|
+| `deriveName(wallet, format?)` | `string` | Deterministic name from wallet (SHA-256) |
+| `deriveIdentity(wallet)` | `SolNameIdentity` | Full identity bundle from wallet |
 | `generateTraits(wallet, overrides?)` | `SolFaceTraits` | Deterministic traits from wallet |
 | `getTraitLabels(traits)` | `Record<string, string>` | Human-readable trait names |
 | `traitHash(wallet)` | `string` | 8-char hex hash |
@@ -627,7 +731,7 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 | `blend(a, b, t)` | `string` | Blend two colors |
 | `luminance(hex)` | `number` | Perceived luminance (0-255) |
 | `deriveSkinColors(skinHex)` | `DerivedColors` | Full skin-luminance color derivation |
-| `SOLFACE_TOOLS` | `SolFaceTool[]` | All 5 agent tool definitions |
+| `SOLFACE_TOOLS` | `SolFaceTool[]` | All 6 agent tool definitions |
 | `handleToolCall(name, params)` | `unknown` | Universal agent tool dispatcher |
 
 ### React Component Props
@@ -701,11 +805,12 @@ Available keys: `skin`, `eyes`, `hair`, `bg`, `mouth`, `eyebrow`, `accessory`, `
 
 | Path | Contents | React? |
 |------|----------|--------|
-| `solfaces` | Core + colors + themes + describe + rasterize + agent tools | No |
+| `solfaces` | Core + colors + themes + names + describe + rasterize + agent tools | No |
 | `solfaces/core` | Engine only (traits, renderer, colors, describe) | No |
 | `solfaces/react` | React component (base + pixel + glass modes) | Yes |
 | `solfaces/vanilla` | DOM helpers (mount, setImg, autoInit) | No |
 | `solfaces/themes` | 11 preset themes | No |
+| `solfaces/names` | SolNames derivation + validation | No |
 | `solfaces/agent` | AI agent tool definitions + framework adapters | No |
 | `solfaces/cdn` | IIFE for `<script>` tags | No |
 
@@ -746,11 +851,18 @@ solfaces/
 │   │   ├── colors.ts      # Color math: darken, lighten, blend, deriveSkinColors
 │   │   ├── traits.ts       # Types, palettes, theme system, trait generation
 │   │   ├── renderer.ts     # SVG string renderer (gradient-rich, detail levels)
-│   │   ├── describe.ts     # Natural language descriptions for AI agents
+│   │   ├── describe.ts     # (no names.ts — moved to names/)
 │   │   ├── rasterize.ts    # PNG output (sharp / resvg / canvas)
+│   │   └── index.ts
+│   ├── names/
+│   │   ├── constants.ts   # 1000 adjectives, 1000 nouns, blocked combos
+│   │   ├── sha256.ts      # Pure-JS SHA-256 (sync, zero deps)
+│   │   ├── derive.ts      # deriveName(), deriveIdentity()
+│   │   ├── validate.ts    # isValidSolName(), parseSolName()
 │   │   └── index.ts
 │   ├── react/
 │   │   ├── SolFace.tsx     # React component (base + pixel art + liquid glass)
+│   │   ├── useSolName.ts   # useSolName() hook
 │   │   └── index.ts
 │   ├── vanilla/
 │   │   └── index.ts        # mountSolFace, setSolFaceImg, autoInit
@@ -758,7 +870,7 @@ solfaces/
 │   │   ├── presets.ts      # 11 preset themes
 │   │   └── index.ts
 │   ├── agent/
-│   │   ├── tools.ts        # 5 canonical tool definitions + handlers
+│   │   ├── tools.ts        # 6 canonical tool definitions + handlers
 │   │   ├── index.ts        # Format adapters (MCP, OpenAI, Anthropic, Vercel AI)
 │   │   └── mcp-server.ts   # Standalone MCP server (npx solfaces)
 │   ├── cdn.ts              # IIFE bundle for <script> tag

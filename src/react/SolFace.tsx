@@ -18,6 +18,8 @@ import {
 } from "../core/traits";
 import { deriveSkinColors, darken, lighten, blend, buzzOpacity } from "../core/colors";
 import { renderSolFaceSVG } from "../core/renderer";
+import { deriveName } from "../names";
+import type { NameFormat } from "../names";
 
 export interface SolFaceProps extends Omit<SVGAttributes<SVGSVGElement>, "viewBox" | "xmlns"> {
   walletAddress: string;
@@ -40,6 +42,9 @@ export interface SolFaceProps extends Omit<SVGAttributes<SVGSVGElement>, "viewBo
     nose?: string;
     eyeWhite?: string;
   };
+  showName?: boolean;
+  namePosition?: "below" | "above";
+  nameFormat?: NameFormat;
 }
 
 // ─── Helpers ────────────────────────────────────
@@ -580,6 +585,9 @@ export function SolFace({
   traitOverrides,
   colorOverrides,
   detail: detailProp,
+  showName = false,
+  namePosition = "below",
+  nameFormat = "display",
   className,
   style,
   ...rest
@@ -736,12 +744,29 @@ export function SolFace({
 
   // Liquid glass mode
   if (theme?._glass) {
-    return (
+    const glassEl = (
       <GlassWrapper size={size} theme={theme}>
         {svgElement}
       </GlassWrapper>
     );
+    if (!showName) return glassEl;
+    const glassName = deriveName(walletAddress, nameFormat);
+    return (
+      <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        {namePosition === "above" && <span style={{ fontSize: Math.max(10, size / 5), fontFamily: "inherit" }}>{glassName}</span>}
+        {glassEl}
+        {namePosition === "below" && <span style={{ fontSize: Math.max(10, size / 5), fontFamily: "inherit" }}>{glassName}</span>}
+      </div>
+    );
   }
 
-  return svgElement;
+  if (!showName) return svgElement;
+  const walletName = deriveName(walletAddress, nameFormat);
+  return (
+    <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+      {namePosition === "above" && <span style={{ fontSize: Math.max(10, size / 5), fontFamily: "inherit" }}>{walletName}</span>}
+      {svgElement}
+      {namePosition === "below" && <span style={{ fontSize: Math.max(10, size / 5), fontFamily: "inherit" }}>{walletName}</span>}
+    </div>
+  );
 }

@@ -18,12 +18,13 @@
 
 - **Build:** `npm run build`
 - **Typecheck:** `npm run typecheck`
-- **Test:** `npm test` (98 tests across 7 files)
+- **Test:** `npm test`
 - **Lint:** `npm run lint`
 
 ## Project Structure
 
 - `src/core/` — Trait engine, SVG renderer, color math, AI descriptions
+- `src/names/` — SolNames: SHA-256 deterministic name derivation (word lists, PRNG, validation)
 - `src/react/` — React `<SolFace>` component with pixel/glass support
 - `src/vanilla/` — Vanilla JS helpers (`mountSolFace`, `setSolFaceImg`)
 - `src/themes/` — 11 preset themes
@@ -42,5 +43,5 @@
 ## Important Rules
 
 - **Never change trait generation order** — the PRNG sampling order in `generateTraits()` must never change, or every wallet gets a different face
-- **Python parity** — if you change `src/core/traits.ts` or `src/core/describe.ts`, update the Python port and verify parity tests pass
+- **Python parity** — if you change `src/core/traits.ts`, `src/core/describe.ts`, or `src/names/`, update the Python port and verify parity tests pass
 - **Keep it zero-dependency** — the core library has no runtime dependencies; don't add any

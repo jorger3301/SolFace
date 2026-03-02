@@ -10,6 +10,7 @@ export default defineConfig([
       "vanilla/index": "src/vanilla/index.ts",
       "themes/index": "src/themes/index.ts",
       "agent/index": "src/agent/index.ts",
+      "names/index": "src/names/index.ts",
     },
     format: ["esm", "cjs"],
     dts: true,

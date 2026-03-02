@@ -10,6 +10,8 @@ import {
   getTraitLabels,
   traitHash,
 } from "../core/traits";
+import { deriveName, deriveIdentity } from "../names";
+import type { NameFormat } from "../names";
 import { PRESET_THEMES, getPresetTheme } from "../themes/presets";
 import type { SolFaceTheme } from "../core/traits";
 
@@ -115,10 +117,12 @@ const describeSolface: SolFaceTool = {
     required: ["wallet"],
   },
   handler(params) {
-    return describeAppearance(params.wallet as string, {
+    const wallet = params.wallet as string;
+    const name = (params.name as string | undefined) ?? deriveName(wallet, "display");
+    return describeAppearance(wallet, {
       format: (params.format as "paragraph" | "structured" | "compact") ?? "paragraph",
       perspective: (params.perspective as "first" | "third") ?? "third",
-      name: params.name as string | undefined,
+      name,
     });
   },
 };
@@ -144,7 +148,8 @@ const getSolfaceTraits: SolFaceTool = {
     const traits = generateTraits(wallet);
     const labels = getTraitLabels(traits);
     const hash = traitHash(wallet);
-    return { traits, labels, hash };
+    const name = deriveName(wallet, "display");
+    return { traits, labels, hash, name };
   },
 };
 
@@ -169,10 +174,9 @@ const getAgentIdentity: SolFaceTool = {
     required: ["wallet"],
   },
   handler(params) {
-    return agentAppearancePrompt(
-      params.wallet as string,
-      params.agentName as string | undefined,
-    );
+    const wallet = params.wallet as string;
+    const agentName = (params.agentName as string | undefined) ?? deriveName(wallet, "display");
+    return agentAppearancePrompt(wallet, agentName);
   },
 };
 
@@ -209,6 +213,38 @@ const listSolfaceThemes: SolFaceTool = {
   },
 };
 
+// ─── Tool: derive_solname ────────────────────────
+
+const deriveSolname: SolFaceTool = {
+  name: "derive_solname",
+  description:
+    "Derive a deterministic name from a Solana wallet address using SHA-256 hashing. Returns human-friendly names like 'SunnyIcon'. Same wallet always produces the same name. ~1M display name combinations, ~65.5B unique tag combinations.",
+  parameters: {
+    type: "object",
+    properties: {
+      wallet: {
+        type: "string",
+        description: "Solana wallet address (base58 public key)",
+      },
+      format: {
+        type: "string",
+        description:
+          "Name format: 'short' (adjective only), 'display' (adj+noun, default), 'tag' (adj+noun+#hex, unique), 'full' (adj+noun-adj+noun). Omit for full identity bundle.",
+        enum: ["short", "display", "tag", "full"],
+      },
+    },
+    required: ["wallet"],
+  },
+  handler(params) {
+    const wallet = params.wallet as string;
+    const format = params.format as NameFormat | undefined;
+    if (format) {
+      return deriveName(wallet, format);
+    }
+    return deriveIdentity(wallet);
+  },
+};
+
 // ─── Export All Tools ────────────────────────────
 
 export const SOLFACE_TOOLS: SolFaceTool[] = [
@@ -217,4 +253,5 @@ export const SOLFACE_TOOLS: SolFaceTool[] = [
   getSolfaceTraits,
   getAgentIdentity,
   listSolfaceThemes,
+  deriveSolname,
 ];

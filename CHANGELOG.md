@@ -4,6 +4,31 @@ All notable changes to SolFaces will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] — 2026-03-01
+
+### Added
+
+- **SolNames — deterministic name derivation** — Every wallet gets a human-friendly name derived via SHA-256 hashing and curated word lists. 1000 adjectives + 1000 nouns produce names like "SunnyIcon". Four formats: short ("Sunny"), display ("SunnyIcon", ~1M unique), tag ("SunnyIcon#2f95", ~65.5B unique), full ("SunnyIcon-InfiniteOre", ~1T unique). Same wallet = same name, forever.
+- **`deriveName(wallet, format?)`** — Core name derivation function. Exported from `solfaces` and `solfaces/names`.
+- **`deriveIdentity(wallet)`** — Returns full identity bundle: short, name, tag, full, adjective, noun, hash, discriminator.
+- **`isValidSolName()` / `parseSolName()`** — Name validation and parsing utilities.
+- **`solfaces/names` subpath export** — New entry point for name-only imports.
+- **`useSolName()` React hook** — Returns name string or full identity bundle with `useMemo` optimization.
+- **`showName` / `namePosition` / `nameFormat` React props** — Display derived name above or below the avatar.
+- **`derive_solname` agent tool** — New tool for AI agents to derive wallet names. Supports optional `format` parameter; without format returns full identity object.
+- **Auto-populated names in agent tools** — `describe_solface`, `get_solface_traits`, and `get_agent_identity` now use `deriveName(wallet, "display")`.
+- **CDN support** — `SolFaces.deriveName()` and `SolFaces.deriveIdentity()` available on the global CDN bundle.
+- **Python parity** — `derive_name()` and `derive_identity()` added to `python/solfaces.py` with identical output. `generate_name()` kept as deprecated alias.
+- **Pure-JS SHA-256** — Sync, zero-dependency implementation (~80 lines) for name derivation. Works in Node, browser, edge, Bun.
+- **Blocked combination enforcement** — Offensive adjective+noun pairs are deterministically skipped.
+- **Comprehensive test suite** — SHA-256 NIST vectors, word list validation, all 4 format shapes, frozen test vectors, determinism, blocked combos, validation, Python parity across all formats.
+
+### Removed
+
+- **`generateName()`** — Replaced by `deriveName()`. Old phonetic name system removed entirely.
+- **`generate_solface_name` agent tool** — Replaced by `derive_solname`.
+- **`src/core/names.ts`** — Phonetic name generator removed. SolNames lives in `src/names/`.
+
 ## [2.0.0] — 2026-02-28
 
 ### Added
@@ -36,7 +61,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - **Per-instance color overrides** — `colorOverrides` with 9 keys: skin, eyes, hair, bg, mouth, eyebrow, accessory, nose, eyeWhite.
 - **Earring suppression** — Earrings and stud earrings automatically hidden on long and bob hair styles to prevent visual conflicts.
 - **Visual depth layers** — Ears and hair-back rendering behind the face for long, bob, and wavy hair styles.
-- **Test suite** — 98 tests across 7 modules (traits, colors, renderer, describe, themes, agent tools, Python parity) with Vitest.
+- **Test suite** — 116 tests across 8 modules (traits, colors, renderer, describe, names, themes, agent tools, Python parity) with Vitest.
 - **CI/CD** — GitHub Actions workflow running typecheck → build → test on Node 18, 20, and 22.
 
 ### Changed

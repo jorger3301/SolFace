@@ -15,6 +15,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { generateTraits, getTraitLabels, traitHash, resolveTheme, effectiveAccessory } from "./core/traits";
+import { deriveName, deriveIdentity } from "./names";
 import { renderSolFaceSVG, renderSolFaceDataURI, renderSolFaceBase64 } from "./core/renderer";
 import { describeAppearance, solFaceAltText, agentAppearancePrompt } from "./core/describe";
 import { hexToRgb, rgbToHex, darken, lighten, blend, luminance, deriveSkinColors } from "./core/colors";
@@ -92,6 +93,8 @@ function autoInit(root: HTMLElement | Document = document): void {
 const SolFaces = {
   // Core
   generateTraits,
+  deriveName,
+  deriveIdentity,
   getTraitLabels,
   traitHash,
   resolveTheme,

@@ -1,7 +1,7 @@
 {
   "name": "solfaces",
-  "version": "2.0.0",
-  "description": "Deterministic wallet avatars for the Solana ecosystem. Zero-dependency trait engine with React, vanilla JS, and server-side rendering support.",
+  "version": "2.1.0",
+  "description": "Deterministic wallet avatars and names for the Solana ecosystem. SHA-256 name derivation, zero-dependency trait engine with React, vanilla JS, and server-side rendering support.",
   "author": "https://github.com/jorger3301",
   "license": "MIT",
   "repository": {
@@ -25,7 +25,11 @@
     "ai-agent",
     "mcp",
     "tool-use",
-    "function-calling"
+    "function-calling",
+    "name-generator",
+    "deterministic-name",
+    "sha256",
+    "solnames"
   ],
   "type": "module",
   "main": "./dist/index.cjs",
@@ -62,6 +66,11 @@
       "import": "./dist/agent/index.js",
       "require": "./dist/agent/index.cjs"
     },
+    "./names": {
+      "types": "./dist/names/index.d.ts",
+      "import": "./dist/names/index.js",
+      "require": "./dist/names/index.cjs"
+    },
     "./cdn": "./dist/solfaces.cdn.global.js"
   },
   "bin": {
@@ -70,7 +79,8 @@
   "files": [
     "dist",
     "python",
-    "skill.md",
+    "SKILL.md",
+    "reference",
     "README.md",
     "LICENSE"
   ],

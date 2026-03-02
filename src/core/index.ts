@@ -49,3 +49,4 @@ export {
   renderSolFacePNGDataURL,
 } from "./rasterize";
 export type { PNGOptions } from "./rasterize";
+

@@ -4,7 +4,7 @@ Deterministic wallet avatar generation for Python backends, bots, and scripts.
 Zero dependencies. Generates identical traits and SVG output to the TypeScript version.
 
 Usage:
-    from solfaces import generate_traits, render_svg, describe_appearance
+    from solfaces import generate_traits, render_svg, describe_appearance, derive_name
 
     traits = generate_traits("7xKXq...")
     svg = render_svg("7xKXq...", size=256)
@@ -15,7 +15,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional, Dict
 import ctypes
+import hashlib
 import math
+import struct
 
 
 # ─── Types ────────────────────────────────────────────────────
@@ -749,6 +751,274 @@ def agent_appearance_prompt(wallet_address: str, agent_name: Optional[str] = Non
     h = trait_hash(wallet_address)
     return f"My visual identity is a SolFace avatar (ID: {h}) derived from my wallet address. {desc} This appearance is deterministic — anyone who looks up my wallet will see the same face."
 
+
+
+# ─── SolNames v1 — Deterministic Name Derivation ────────────────
+
+SOLNAMES_VERSION = "v1"
+
+ADJECTIVES = [
+    "Frost","Solar","Coral","Amber","Mossy","Lunar","Misty","Alpine","Autumn","Breeze",
+    "Cerulean","Cloudy","Cosmic","Crystal","Dewy","Dusty","Earthy","Floral","Forest","Frozen",
+    "Glacial","Golden","Grassy","Harbor","Ivory","Jasmine","Lagoon","Leafy","Lush","Marine",
+    "Meadow","Mineral","Mosaic","Nectar","Nordic","Oceanic","Orchid","Pearly","Petal","Polar",
+    "Prairie","Rain","River","Rocky","Sandy","Savanna","Shore","Sierra","Snowy","Spring",
+    "Starry","Stone","Summer","Sunset","Tidal","Timber","Tropic","Tundra","Valley","Verdant",
+    "Winding","Winter","Woody","Bloom","Blossom","Brook","Canyon","Cedar","Cloud","Comet",
+    "Copper","Dawn","Delta","Dune","Eclipse","Fern","Flame","Flora","Glade","Azure",
+    "Cobalt","Crimson","Indigo","Scarlet","Sapphire","Emerald","Ruby","Garnet","Onyx","Jade",
+    "Turquoise","Magenta","Plum","Russet","Tawny","Burnt","Gilded","Platinum","Bronze","Chrome",
+    "Pearl","Opal","Blush","Rosy","Dusky","Inky","Ashen","Cream","Slate","Charcoal",
+    "Steel","Pewter","Honey","Saffron","Citrus","Lemon","Tangerine","Peach","Apricot","Vermilion",
+    "Mauve","Lilac","Periwinkle","Cerise","Maroon","Burgundy","Wine","Berry","Cherry","Mint",
+    "Olive","Teal","Navy","Cyan","Neon","Pastel","Muted","Lustrous","Gleaming","Glossy",
+    "Shining","Glowing","Luminous","Brilliant","Sparkling","Shimmering","Iridescent","Prismatic","Spectral","Twilight",
+    "Sunrise","Sunlit","Moonlit","Starlit","Candlelit","Firelit","Sunbeam","Afterglow","Halo","Flicker",
+    "Glow","Ray","Beam","Blaze","Glint","Spark","Arc","Prism","Spectrum","Rainbow",
+    "Aurora","Nebula","Stellar","Astral","Lucent","Frosted","Swift","Bold","Keen","Brave",
+    "Noble","Serene","Fierce","Gentle","Agile","Alert","Astute","Candid","Clever","Daring",
+    "Eager","Earnest","Fair","Gallant","Graceful","Hardy","Honest","Humble","Jovial","Joyful",
+    "Kind","Loyal","Merry","Mindful","Nimble","Patient","Plucky","Proud","Quick","Ready",
+    "Resilient","Savvy","Sincere","Skilled","Steady","Stout","Strong","Sure","Tender","True",
+    "Valiant","Willing","Wise","Witty","Worthy","Zealous","Active","Adept","Ardent","Avid",
+    "Benign","Bright","Civil","Clean","Clear","Composed","Content","Courtly","Crafty","Curious",
+    "Decent","Devout","Diligent","Direct","Driven","Dynamic","Elegant","Elite","Even","Exact",
+    "Famed","Fervent","Fine","Firm","Fit","Fluid","Focal","Fond","Frank","Free",
+    "Fresh","Friendly","Frugal","Gifted","Glad","Grand","Great","Green","Grounded","Hale",
+    "Happy","Hearty","Heroic","Ideal","Infinite","Inner","Intact","Intent","Just","Lively",
+    "Lucky","Major","Mellow","Mighty","Modest","Natural","Neat","Optimal","Original","Pacific",
+    "Peaceful","Pious","Pleased","Poised","Polite","Popular","Potent","Precious","Premier","Prime",
+    "Proper","Proven","Pure","Quiet","Rapid","Rare","Real","Regal","Rich","Rising",
+    "Robust","Royal","Sacred","Safe","Scenic","Secure","Senior","Sharp","Simple","Smart",
+    "Smooth","Snug","Social","Solid","Sound","Special","Stable","Stately","Still","Super",
+    "Supreme","Sweet","Thorough","Tidy","Top","Total","Tough","Trim","Trusted","Ultimate",
+    "Unique","United","Upper","Useful","Valid","Valued","Varied","Vital","Vivid","Vocal",
+    "Whole","Wide","Young","Zesty","Iron","Gold","Silver","Marble","Granite","Velvet",
+    "Satin","Silk","Linen","Cotton","Suede","Denim","Canvas","Leather","Wooden","Bamboo",
+    "Wicker","Woven","Braided","Knit","Lace","Mesh","Fiber","Glass","Mirror","Diamond",
+    "Flint","Basalt","Obsidian","Chalk","Clay","Gravel","Pebble","Cobble","Brick","Tile",
+    "Resin","Fossil","Shell","Bone","Feather","Plush","Brushed","Polished","Hammered","Forged",
+    "Cast","Molten","Tempered","Etched","Carved","Sculpted","Spun","Pressed","Rolled","Folded",
+    "Layered","Stacked","Ribbed","Matte","Lacquered","Enameled","Glazed","Painted","Dyed","Stained",
+    "Refined","Distilled","Purified","Filtered","Alloyed","Plated","Coated","Sealed","Bonded","Fused",
+    "Welded","Riveted","Textured","Grained","Veined","Flecked","Speckled","Dappled","Streaked","Banded",
+    "Striped","Checkered","Waxed","Oiled","Cured","Tanned","Smoked","Burnished","Antiqued","Patina",
+    "Weathered","Aged","Rustic","Hewn","Vast","Broad","Deep","High","Tall","Giant",
+    "Colossal","Massive","Immense","Boundless","Endless","Sweeping","Spanning","Extended","Towering","Soaring",
+    "Lofty","Elevated","Raised","Summit","Apex","Crest","Crown","Pinnacle","Zenith","Ridge",
+    "Ledge","Level","Hollow","Compact","Dense","Thick","Narrow","Slender","Micro","Mini",
+    "Small","Ample","Hefty","Jumbo","Mega","Ultra","Macro","Central","Core","Outer",
+    "Lateral","Radial","Spiral","Orbital","Linear","Planar","Spherical","Rounded","Angular","Pointed",
+    "Tapered","Curved","Arced","Twisted","Coiled","Fractal","Cellular","Quantum","Photon","Plasma",
+    "Kinetic","Static","Charged","Maximal","Atomic","Nano","Tiered","Strata","Nested","Stepped",
+    "Graded","Scaled","Proportioned","Modular","Symmetric","Parallel","Flowing","Drifting","Gliding","Sailing",
+    "Floating","Climbing","Leaping","Bounding","Sprinting","Dashing","Rushing","Surging","Cascading","Rolling",
+    "Tumbling","Spinning","Whirling","Twisting","Swirling","Pulsing","Beating","Humming","Buzzing","Ringing",
+    "Chiming","Singing","Dancing","Swaying","Waving","Rippling","Bubbling","Fizzing","Crackling","Snapping",
+    "Clicking","Tapping","Drumming","Thrumming","Vibrant","Magnetic","Electric","Blazing","Burning","Fiery",
+    "Volcanic","Thermal","Warming","Cooling","Chilling","Brisk","Crisp","Breezy","Gusty","Windy",
+    "Airy","Light","Buoyant","Weightless","Fleet","Peppy","Zippy","Snappy","Speedy","Sonic",
+    "Turbo","Warp","Express","Instant","Darting","Flying","Jetting","Cruising","Coasting","Rhythmic",
+    "Cycling","Pacing","Striding","Marching","Trotting","Galloping","Bouncing","Vaulting","Arching","Launched",
+    "Propelled","Hovering","Orbiting","Revolving","Rotating","Pivoting","Swinging","Rocking","Tilting","Shifting",
+    "Sliding","Skating","Surfing","Diving","Plunging","Dipping","Wading","Celestial","Ethereal","Mystic",
+    "Arcane","Ancient","Eternal","Timeless","Ageless","Enduring","Lasting","Perpetual","Legendary","Mythic",
+    "Epic","Fabled","Storied","Historic","Classic","Vintage","Retro","Modern","Future","Digital",
+    "Cyber","Virtual","Pixel","Binary","Omega","Alpha","Beta","Gamma","Sigma","Theta",
+    "Lambda","Kappa","Zeta","Epsilon","Omni","Dual","Triple","Nexus","Vertex","Vector",
+    "Matrix","Cipher","Enigma","Phantom","Mirage","Dream","Vision","Oracle","Prophet","Sage",
+    "Shaman","Druid","Artisan","Maestro","Virtuoso","Savant","Prodigy","Maven","Guru","Mentor",
+    "Guide","Scout","Pioneer","Voyager","Wanderer","Nomad","Rover","Ranger","Sentinel","Guardian",
+    "Keeper","Warden","Champion","Vanguard","Herald","Emissary","Envoy","Ambassador","Steward","Curator",
+    "Patron","Benefactor","Founder","Architect","Builder","Maker","Crafter","Weaver","Forger","Smith",
+    "Wright","Mason","Brewer","Baker","Tanner","Dyer","Scribe","Bard","Minstrel","Troubadour",
+    "Storyteller","Chronicler","Lorekeeper","Archivist","Tranquil","Placid","Hushed","Muffled","Soft","Subtle",
+    "Faint","Dim","Pale","Warm","Cool","Taut","Tense","Cozy","Homey","Pastoral",
+    "Sylvan","Bucolic","Idyllic","Quaint","Charming","Lovely","Pretty","Dapper","Natty","Chic",
+    "Posh","Classy","Fancy","Ornate","Lavish","Opulent","Majestic","Dignified","August","Solemn",
+    "Sober","Heartfelt","Genuine","Authentic","Novel","Singular","Distinct","Chosen","Select","Premium",
+    "Deluxe","Superior","Exquisite","Superb","Splendid","Glorious","Sublime","Resonant","Harmonic","Melodic",
+    "Lyrical","Poetic","Seamless","Effortless","Organic","Primal","Devoted","Dedicated","Committed","Focused",
+    "Determined","Resolute","Steadfast","Unwavering","Constant","Faithful","Reliable","Dependable","Trusty","Anchored",
+    "Moored","Sheltered","Protected","Guarded","Shielded","Fortified","Reinforced","Braced","Bolstered","Supported",
+    "Upheld","Sustained","Preserved","Conserved","Stored","Vaulted","Locked","Secured","Fastened","Linked",
+    "Joined","Connected","Paired","Matched","Balanced","Aligned","Centered","Aimed","Directed","Guided",
+    "Steered","Piloted","Navigated","Charted","Mapped","Tracked","Pursued","Discovered","Unveiled","Displayed",
+    "Presented","Granted","Bestowed","Conferred","Sapient","Sentient","Radiant","Fertile","Abundant","Bountiful",
+    "Plentiful","Prolific","Thriving","Flourishing","Blooming","Budding","Growing","Expanding","Advancing","Progressing",
+    "Evolving","Maturing","Ripening","Developing","Emerging","Nascent","Incipient","Dawning","Unfolding","Awakening",
+    "Stirring","Kindling","Igniting","Sparking","Triggering","Launching","Initiating","Pioneering","Trailblazing","Groundbreaking",
+    "Innovative","Inventive","Creative","Imaginative","Inspired","Visionary","Prophetic","Prescient","Insightful","Perceptive",
+    "Observant","Watchful","Vigilant","Attentive","Thoughtful","Considerate","Caring","Nurturing","Fostering","Cultivating",
+    "Tending","Pruning","Trimming","Shaping","Forming","Molding","Fashioning","Designing","Drafting","Sketching",
+    "Drawing","Painting","Coloring","Tinting","Shading","Blending","Mixing","Merging","Combining","Uniting",
+    "Fusing","Melding","Weaving","Knitting","Stitching","Sewing","Quilting","Patching","Mending","Healing",
+    "Restoring","Renewing","Reviving","Refreshing","Rejuvenating","Invigorating","Energizing","Empowering","Strengthening","Fortifying",
+    "Hardening","Tempering","Seasoning","Curing","Aging","Mellowing","Softening","Smoothing","Leveling","Planing",
+    "Sanding","Buffing","Burnishing","Radiating","Beaming","Lighting","Illuminating","Brightening","Clarifying","Purifying",
+    "Filtering","Distilling","Condensing","Concentrating","Focusing","Directing","Channeling","Terraced","Ascending","Streaming",
+    "Umber","Careful","Perfecting","Glittering","Twinkling","Verdure","Auroral","Boreal","Austral","Temperate",
+]
+
+NOUNS = [
+    "Falcon","Hawk","Eagle","Owl","Heron","Crane","Swan","Dove","Raven","Finch",
+    "Robin","Wren","Lark","Jay","Ibis","Kite","Osprey","Condor","Pelican","Stork",
+    "Sparrow","Tern","Puffin","Parrot","Toucan","Kingfisher","Flamingo","Quail","Pheasant","Grouse",
+    "Oriole","Warbler","Thrush","Starling","Magpie","Swallow","Martin","Plover","Curlew","Sandpiper",
+    "Wolf","Fox","Bear","Stag","Elk","Moose","Bison","Lynx","Cougar","Panther",
+    "Jaguar","Leopard","Tiger","Lion","Cheetah","Gazelle","Antelope","Impala","Zebra","Giraffe",
+    "Rhino","Hippo","Otter","Beaver","Badger","Marten","Ferret","Mink","Hare","Rabbit",
+    "Squirrel","Chipmunk","Porcupine","Hedgehog","Armadillo","Pangolin","Lemur","Gibbon","Tamarin","Capybara",
+    "Chinchilla","Ocelot","Margay","Coati","Kinkajou","Tapir","Okapi","Kudu","Oryx","Chamois",
+    "Orca","Dolphin","Whale","Narwhal","Walrus","Seal","Manatee","Turtle","Iguana","Gecko",
+    "Chameleon","Newt","Salamander","Crab","Lobster","Seahorse","Starfish","Octopus","Squid","Jellyfish",
+    "Stingray","Barracuda","Marlin","Sailfish","Trout","Salmon","Mantis","Cricket","Firefly","Dragonfly",
+    "Cedar","Oak","Pine","Birch","Maple","Elm","Ash","Willow","Cypress","Redwood",
+    "Sequoia","Spruce","Fir","Larch","Yew","Beech","Alder","Poplar","Aspen","Walnut",
+    "Hickory","Teak","Mahogany","Ebony","Bamboo","Palm","Acacia","Baobab","Banyan","Olive",
+    "Laurel","Magnolia","Lotus","Orchid","Iris","Lily","Rose","Tulip","Daisy","Aster",
+    "Dahlia","Peony","Jasmine","Violet","Clover","Fern","Moss","Lichen","Ivy","Vine",
+    "Reed","Sage","Basil","Thyme","Mint","Dill","Fennel","Sorrel","Yarrow","Thistle",
+    "Heather","Bluebell","Primrose","Marigold","Sunflower","Zinnia","Pansy","Poppy","Crocus","Snowdrop",
+    "Foxglove","Honeysuckle","Wisteria","Hibiscus","Plumeria","Gardenia","Camellia","Begonia","Azalea","Oleander",
+    "Canyon","Ridge","Peak","Summit","Cliff","Bluff","Mesa","Butte","Plateau","Terrace",
+    "Valley","Basin","Gorge","Ravine","Gulch","Fjord","Inlet","Bay","Cove","Harbor",
+    "Lagoon","Reef","Atoll","Isle","Peninsula","Cape","Shoal","Bank","Ledge","Shelf",
+    "Dune","Desert","Steppe","Tundra","Glacier","Moraine","Geyser","Oasis","Delta","Estuary",
+    "Marsh","Bog","Swamp","Fen","Moor","Heath","Meadow","Prairie","Savanna","Glen",
+    "Dale","Dell","Vale","Hollow","Grove","Copse","Thicket","Taiga","Mangrove","Wetland",
+    "Cascade","Brook","Creek","Stream","River","Lake","Pond","Pool","Tarn","Loch",
+    "Falls","Fountain","Grotto","Cavern","Cave","Tunnel","Arch","Bridge","Ford","Pass",
+    "Trail","Path","Route","Caldera","Crater","Vent","Spire","Needle","Dome","Gateway",
+    "Portal","Threshold","Verge","Brink","Edge","Rim","Brow","Crest","Promontory","Headland",
+    "Spit","Tombolo","Isthmus","Strait","Narrows","Sound","Bight","Reach","Stretch","Expanse",
+    "Clearing","Glade","Knoll","Hillock","Mound","Tor","Crag","Scarp","Escarpment","Comet",
+    "Meteor","Asteroid","Nebula","Galaxy","Quasar","Pulsar","Star","Sun","Moon","Planet",
+    "Orbit","Eclipse","Corona","Flare","Nova","Cosmos","Void","Abyss","Ether","Zenith",
+    "Nadir","Horizon","Aurora","Meridian","Equinox","Solstice","Phase","Cycle","Epoch","Eon",
+    "Era","Dawn","Dusk","Twilight","Night","Noon","Morning","Evening","Sunset","Sunrise",
+    "Daybreak","Nightfall","Starlight","Moonbeam","Sunray","Skyline","Firmament","Canopy","Infinity","Vega",
+    "Rigel","Altair","Deneb","Sirius","Polaris","Arcturus","Antares","Lyra","Orion","Draco",
+    "Phoenix","Hydra","Corvus","Cygnus","Aquila","Andromeda","Pegasus","Perseus","Gemini","Centauri",
+    "Cassiopeia","Scorpius","Sagittarius","Capella","Procyon","Aldebaran","Betelgeuse","Spica","Prism","Quill",
+    "Forge","Anvil","Helm","Rune","Atlas","Compass","Anchor","Beacon","Bell","Bugle",
+    "Drum","Flute","Harp","Horn","Lyre","Pipe","Gong","Chime","Cymbal","Fiddle",
+    "Trumpet","Viola","Cello","Oboe","Lute","Mandolin","Zither","Sitar","Banjo","Lantern",
+    "Torch","Candle","Lamp","Globe","Lens","Scope","Mirror","Frame","Easel","Palette",
+    "Brush","Chisel","Mallet","Hammer","Tongs","Ladle","Kettle","Crucible","Mortar","Pestle",
+    "Flask","Vial","Beaker","Alembic","Furnace","Kiln","Loom","Shuttle","Bobbin","Spool",
+    "Thimble","Pin","Clasp","Buckle","Brooch","Pendant","Amulet","Talisman","Charm","Token",
+    "Coin","Medal","Badge","Shield","Banner","Flag","Pennant","Sigil","Stamp","Emblem",
+    "Totem","Icon","Statue","Obelisk","Monolith","Cairn","Tablet","Scroll","Tome","Codex",
+    "Ledger","Journal","Chronicle","Almanac","Manual","Gazette","Folio","Pamphlet","Broadsheet","Parchment",
+    "Vellum","Papyrus","Inkwell","Quiver","Satchel","Pouch","Casket","Coffer","Chest","Crate",
+    "Barrel","Quartz","Opal","Onyx","Agate","Garnet","Topaz","Beryl","Zircon","Spinel",
+    "Peridot","Jasper","Amethyst","Citrine","Tourmaline","Malachite","Azurite","Lapis","Pyrite","Galena",
+    "Mica","Talc","Gypsum","Calcite","Dolomite","Basalt","Granite","Marble","Slate","Shale",
+    "Sandstone","Limestone","Obsidian","Pumice","Tuff","Chert","Flint","Chalcedony","Carnelian","Sardonyx",
+    "Moonstone","Sunstone","Labradorite","Tanzanite","Kunzite","Rhodonite","Sodalite","Chrysocolla","Aventurine","Fluorite",
+    "Seraphinite","Charoite","Sugilite","Larimar","Prehnite","Danburite","Scolecite","Celestite","Amazonite","Howlite",
+    "Lepidolite","Storm","Thunder","Lightning","Breeze","Gale","Squall","Typhoon","Cyclone","Monsoon",
+    "Tempest","Zephyr","Chinook","Mistral","Sirocco","Foehn","Bora","Rain","Drizzle","Shower",
+    "Downpour","Deluge","Flood","Torrent","Current","Tide","Wave","Swell","Surf","Spray",
+    "Foam","Mist","Fog","Haze","Dew","Frost","Ice","Snow","Sleet","Hail",
+    "Rime","Thaw","Flow","Drift","Eddy","Vortex","Whirl","Spiral","Funnel","Column",
+    "Plume","Wisp","Streak","Band","Front","Trough","Rainbow","Halo","Mirage","Shimmer",
+    "Glimmer","Tower","Turret","Bastion","Citadel","Fortress","Castle","Palace","Manor","Lodge",
+    "Cabin","Cottage","Villa","Ranch","Barn","Silo","Mill","Foundry","Workshop","Studio",
+    "Gallery","Museum","Library","Archive","Treasury","Vault","Chamber","Hall","Court","Plaza",
+    "Garden","Balcony","Porch","Arcade","Colonnade","Pergola","Pavilion","Gazebo","Kiosk","Chapel",
+    "Temple","Shrine","Monastery","Abbey","Cathedral","Basilica","Minaret","Pagoda","Stupa","Pyramid",
+    "Arena","Stadium","Forum","Market","Bazaar","Emporium","Depot","Station","Terminal","Dock",
+    "Wharf","Pier","Jetty","Quay","Marina","Lighthouse","Watchtower","Outpost","Camp","Shelter",
+    "Refuge","Sanctuary","Haven","Retreat","Nest","Aerie","Burrow","Den","Lair","Roost",
+    "Perch","Bower","Arbor","Alcove","Sextant","Astrolabe","Sundial","Hourglass","Pendulum","Gyroscope",
+    "Turbine","Dynamo","Generator","Piston","Valve","Lever","Pulley","Winch","Derrick","Gantry",
+    "Scaffold","Trellis","Lattice","Grid","Net","Web","Axle","Gear","Cog","Sprocket",
+    "Chain","Link","Cable","Wire","Thread","Cord","Rope","Rigging","Mast","Boom",
+    "Spar","Keel","Hull","Rudder","Tiller","Wheel","Chart","Map","Gauge","Meter",
+    "Scale","Caliper","Ruler","Level","Plumb","Protractor","Template","Stencil","Mold","Die",
+    "Lathe","Bellows","Retort","Condenser","Centrifuge","Spectrometer","Oscilloscope","Theodolite","Transit","Sounding",
+    "Probe","Sensor","Relay","Switch","Circuit","Diode","Quest","Saga","Legend","Myth",
+    "Fable","Ballad","Anthem","Hymn","Ode","Sonnet","Verse","Stanza","Canto","Chorus",
+    "Refrain","Motif","Theme","Arc","Prologue","Epilogue","Prelude","Overture","Finale","Crescendo",
+    "Cadence","Tempo","Rhythm","Pulse","Beat","Tone","Note","Chord","Harmony","Melody",
+    "Lyric","Opus","Suite","Etude","Fugue","Canon","March","Waltz","Rondo","Aria",
+    "Duet","Trio","Quartet","Ensemble","Guild","League","Order","Council","Assembly","Conclave",
+    "Synod","Quorum","Cohort","Legion","Brigade","Battalion","Regiment","Division","Corps","Fleet",
+    "Squadron","Patrol","Convoy","Caravan","Expedition","Voyage","Journey","Trek","Odyssey","Passage",
+    "Crossing","Venture","Enterprise","Mission","Campaign","Crusade","Pilgrimage","Safari","Sortie","Foray",
+    "Rally","Charge","Advance","Concord","Ember","Blaze","Inferno","Pyre","Spark","Cinder",
+    "Smoke","Vapor","Steam","Nimbus","Cumulus","Cirrus","Stratus","Billow","Puff","Wake",
+    "Ripple","Surge","Ebb","Flux","Gush","Rush","Spring","Well","Font","Source",
+    "Origin","Root","Seed","Sprout","Bud","Bloom","Petal","Leaf","Branch","Limb",
+    "Trunk","Bark","Grain","Fiber","Pulp","Core","Sap","Resin","Nectar","Pollen",
+    "Spore","Frond","Tendril","Runner","Shoot","Stalk","Stem","Thorn","Burr","Cone",
+    "Acorn","Pinecone","Nutshell","Keystone","Capstone","Milestone","Cornerstone","Foundation","Bedrock","Pillar",
+    "Buttress","Parapet","Battlement","Barbican","Gatehouse","Drawbridge","Portcullis","Moat","Stockade","Palisade",
+    "Bulwark","Levee","Embankment","Causeway","Aqueduct","Viaduct","Trestle","Span","Lintel","Plinth",
+    "Pedestal","Dais","Rostrum","Podium","Stage","Platform","Deck","Landing","Berth","Channel",
+    "Lock","Weir","Dam","Spillway","Flume","Chute","Sluice","Nozzle","Spout","Faucet",
+    "Cistern","Wellspring","Headwater","Watershed","Alluvium","Loam","Humus","Peat","Marl","Silt",
+    "Writ","Clamp","Eyepiece","Traverse","Stride","Parley","Char","Trace","Confluence","Rampart",
+]
+
+BLOCKED_COMBOS = set()  # Add any offensive adj+noun combinations here
+
+
+def derive_name(wallet: str, fmt: str = "display") -> str:
+    """Derive a deterministic name from a Solana wallet address.
+
+    Args:
+        wallet: Base58 wallet address
+        fmt: Name format - "short", "display" (default), "tag", or "full"
+
+    Returns:
+        Formatted name string
+    """
+    identity = derive_identity(wallet)
+    return identity[fmt] if fmt != "display" else identity["name"]
+
+
+def derive_identity(wallet: str) -> dict:
+    """Derive the full identity bundle for a wallet address."""
+    domain = f"solnames-{SOLNAMES_VERSION}:"
+    hash_bytes = hashlib.sha256((domain + wallet).encode("utf-8")).digest()
+    hex_str = hash_bytes.hex()
+
+    # Seed PRNG from first 4 bytes (big-endian unsigned)
+    seed = struct.unpack(">I", hash_bytes[0:4])[0]
+    rng = _mulberry32(seed)
+
+    # Pick first adj+noun pair, retrying if blocked
+    adj1 = ADJECTIVES[math.floor(rng() * len(ADJECTIVES))]
+    noun1 = NOUNS[math.floor(rng() * len(NOUNS))]
+    while (adj1 + noun1) in BLOCKED_COMBOS:
+        adj1 = ADJECTIVES[math.floor(rng() * len(ADJECTIVES))]
+        noun1 = NOUNS[math.floor(rng() * len(NOUNS))]
+
+    # Pick second adj+noun pair for full format
+    adj2 = ADJECTIVES[math.floor(rng() * len(ADJECTIVES))]
+    noun2 = NOUNS[math.floor(rng() * len(NOUNS))]
+
+    # Discriminator from bytes 8-9
+    discriminator = hex_str[16:20]
+
+    return {
+        "short": adj1,
+        "name": adj1 + noun1,
+        "tag": adj1 + noun1 + "#" + discriminator,
+        "full": adj1 + noun1 + "-" + adj2 + noun2,
+        "adjective": adj1,
+        "noun": noun1,
+        "hash": hex_str,
+        "discriminator": discriminator,
+    }
+
+
+def generate_name(wallet: str, **kwargs) -> str:
+    """Deprecated: use derive_name() instead. Returns display format for backward compat."""
+    return derive_name(wallet, "display")
 
 # ─── CLI ──────────────────────────────────────────────────────
 
