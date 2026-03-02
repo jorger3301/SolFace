@@ -1,6 +1,6 @@
 ---
 name: solfaces
-description: Generates deterministic avatars and names for Solana wallet addresses. Use when the user mentions wallet avatars, profile pictures, visual identity, SolFaces, or needs to represent a Solana wallet visually. Provides SVG rendering, natural language descriptions, SHA-256 name derivation, and AI agent identity prompts. 6 tools available.
+description: Generates deterministic avatars and names for Solana wallet addresses. Use when the user mentions wallet avatars, profile pictures, visual identity, SolFaces, Solana PFP, deterministic identity, wallet names, or needs to represent a Solana wallet visually or with a human-readable name. Provides SVG rendering, natural language descriptions, SHA-256 name derivation, and AI agent identity prompts. 6 tools available.
 ---
 
 # SolFaces
@@ -43,6 +43,8 @@ Returns: description string. Auto-populates `name` from `deriveName(wallet, "dis
 ### `get_solface_traits`
 Raw trait data with human-readable labels and hash.
 
+**When to use:** User wants to inspect raw trait values, compare wallets, or build custom rendering logic.
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `wallet` | string | Yes | Solana wallet address |
@@ -51,6 +53,8 @@ Returns: `{ traits: SolFaceTraits, labels: Record<string, string>, hash: string,
 
 ### `get_agent_identity`
 System prompt snippet giving an AI agent a visual identity.
+
+**When to use:** User is building an AI agent and wants to give it a visual identity tied to a wallet.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -73,6 +77,8 @@ Returns: Without format: `SolNameIdentity` object (short/name/tag/full/adjective
 
 ### `list_solface_themes`
 List available preset themes with descriptions.
+
+**When to use:** User wants to see available themes or choose a visual style.
 
 No parameters. Returns: Array of `{ name, description, reactOnly }`.
 
