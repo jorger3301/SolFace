@@ -374,7 +374,7 @@ function Mouth({ mi, lipColor, isDark }: { mi: number; lipColor: string; isDark:
 
 // ─── Accessory ──────────────────────────────────
 
-function Accessory({ ai, accessoryColor, glassesColor, earringColor, headbandColor, beautyMarkColor = "#3a2a2a", freckleColor = "#a0785a", skinColor = "#E8BA8B" }: {
+function Accessory({ ai, accessoryColor: _accessoryColor, glassesColor, earringColor, headbandColor, beautyMarkColor = "#3a2a2a", freckleColor = "#a0785a", skinColor = "#E8BA8B" }: {
   ai: number; accessoryColor: string; glassesColor: string; earringColor: string; headbandColor: string; beautyMarkColor?: string; freckleColor?: string; skinColor?: string;
 }) {
   switch (ai) {
