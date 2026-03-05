@@ -941,18 +941,6 @@ solfaces/
 
 ---
 
-## Migration from v1
-
-v2.0.0 is a breaking release:
-
-- **All faces change.** Trait ranges expanded (skin 6→10, mouth 6→8, hair 10, accessories 6→12, bg 5→12, eyes 8→9), so every wallet generates a different face than in v1. Hair is sampled but no longer rendered (all faces are bald).
-- **Old themes removed.** `solana`, `neon`, `jupiter`, `phantom`, `circle` themes are gone. Use `dark`, `light`, `mono`, `flat`, `transparent`, or the new `glass`/`pixel` themes.
-- **New rendering engine.** Gradient-rich rendering with skin-luminance-driven colors, ears, and face overlays.
-- **New theme fields.** `flat`, `cheekEnabled`, `shadowEnabled`, `glowIntensity`, and React-only `_glass*`/`_pixel*` fields.
-- **`colorOverrides` still supported.** Per-instance color overrides work the same as v1.
-
----
-
 ## License
 
 MIT — use it anywhere, commercial or open source.
