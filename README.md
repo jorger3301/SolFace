@@ -30,7 +30,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
 - **Flat mode** — Disable all gradients for simplified rendering.
 - **Detail levels** — Full detail (gradients, specular, cheeks) at size >= 48, simplified below.
-- **Fully customizable** — Every visual element is customizable: 4 color palettes, 8 individual color overrides, 9 per-instance color keys, rendering toggles, layout controls, blink timing, and 30+ React-only pixel/glass fields. No visual element is locked — if you can see it, you can theme it.
+- **Fully customizable** — Every visual element is customizable: 4 color palettes, 10 individual color overrides, 9 per-instance color keys, rendering toggles, layout controls, blink timing, and 35+ React-only pixel/glass fields. No visual element is locked — if you can see it, you can theme it.
 - **Eliminates dead space** — No more blank avatars or generic placeholders. Every wallet gets a unique face instantly.
 - **AI-agent ready** — AI trading bots and autonomous agents are becoming on-chain users. SolFace gives every agent a recognizable face and a natural language self-description for system prompts and bios.
 - **PNG rasterization** — Serve real image files for bots, Discord, Telegram, OG images.
