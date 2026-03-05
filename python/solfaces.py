@@ -525,11 +525,14 @@ def _render_accessory(ai: int, acc_color: str, glasses_color: str, earring_color
                 '<line x1="19" y1="31" x2="14" y2="29"/>'
                 '<line x1="45" y1="31" x2="50" y2="29"/></g>')
     if ai == 9:
-        return ('<g>'
-                '<rect x="38" y="38" width="9" height="4.5" rx="1.2" fill="#f0d0a0" transform="rotate(-15 42 40)"/>'
-                '<rect x="39.5" y="38.5" width="6" height="3.5" rx="0.8" fill="#f5ddb5" transform="rotate(-15 42 40)"/>'
-                '<circle cx="42.5" cy="40.25" r="0.5" fill="#d4b898" transform="rotate(-15 42 40)"/>'
-                '</g>')
+        band_base = lighten(skin_color, 0.3)
+        band_pad = lighten(skin_color, 0.4)
+        band_dot = darken(skin_color, 0.1)
+        return (f'<g>'
+                f'<rect x="38" y="38" width="9" height="4.5" rx="1.2" fill="{band_base}" transform="rotate(-15 42 40)"/>'
+                f'<rect x="39.5" y="38.5" width="6" height="3.5" rx="0.8" fill="{band_pad}" transform="rotate(-15 42 40)"/>'
+                f'<circle cx="42.5" cy="40.25" r="0.5" fill="{band_dot}" transform="rotate(-15 42 40)"/>'
+                f'</g>')
     if ai == 10:  # Left Eyebrow Slit
         return f'<line x1="23" y1="24.8" x2="23.8" y2="29.2" stroke="{skin_color}" stroke-width="1.3" stroke-linecap="butt"/>'
     if ai == 11:  # Right Eyebrow Slit

@@ -4,6 +4,13 @@ All notable changes to SolFaces will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.3] — 2026-03-04
+
+### Fixed
+
+- **Mono theme fully grayscale** — Added `beautyMarkColor`, `cheekColor` overrides and replaced tinted `bgColors` with pure neutral grays.
+- **Band-Aid colors dynamic** — Band-Aid accessory now derives colors from skin tone via `lighten()`/`darken()` instead of hardcoded beige. Fixes color leak in mono theme. Applied to all three renderers (TS, React, Python).
+
 ## [2.3.0] — 2026-03-04
 
 ### Added

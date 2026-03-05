@@ -437,14 +437,18 @@ function Accessory({ ai, accessoryColor: _accessoryColor, glassesColor, earringC
           <line x1="45" y1="31" x2="50" y2="29" />
         </g>
       );
-    case 9:
+    case 9: {
+      const bandBase = lighten(skinColor, 0.3);
+      const bandPad  = lighten(skinColor, 0.4);
+      const bandDot  = darken(skinColor, 0.1);
       return (
         <g>
-          <rect x="38" y="38" width="9" height="4.5" rx="1.2" fill="#f0d0a0" transform="rotate(-15 42 40)" />
-          <rect x="39.5" y="38.5" width="6" height="3.5" rx="0.8" fill="#f5ddb5" transform="rotate(-15 42 40)" />
-          <circle cx="42.5" cy="40.25" r="0.5" fill="#d4b898" transform="rotate(-15 42 40)" />
+          <rect x="38" y="38" width="9" height="4.5" rx="1.2" fill={bandBase} transform="rotate(-15 42 40)" />
+          <rect x="39.5" y="38.5" width="6" height="3.5" rx="0.8" fill={bandPad} transform="rotate(-15 42 40)" />
+          <circle cx="42.5" cy="40.25" r="0.5" fill={bandDot} transform="rotate(-15 42 40)" />
         </g>
       );
+    }
     case 10: // Left Eyebrow Slit
       return <line x1="23" y1="24.8" x2="23.8" y2="29.2" stroke={skinColor} strokeWidth="1.3" strokeLinecap="butt" />;
     case 11: // Right Eyebrow Slit
