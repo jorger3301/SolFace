@@ -2,10 +2,10 @@
 
 [![npm version](https://img.shields.io/npm/v/solfaces)](https://www.npmjs.com/package/solfaces)
 [![npm downloads](https://img.shields.io/npm/dw/solfaces)](https://www.npmjs.com/package/solfaces)
-[![license](https://img.shields.io/npm/l/solfaces)](https://github.com/jorger3301/SolFaces/blob/main/LICENSE)
+[![license](https://img.shields.io/npm/l/solfaces)](https://github.com/jorger3301/SolFace/blob/main/LICENSE)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/solfaces)](https://bundlephobia.com/package/solfaces)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
-[![CI](https://github.com/jorger3301/SolFaces/actions/workflows/ci.yml/badge.svg)](https://github.com/jorger3301/SolFaces/actions/workflows/ci.yml)
+[![CI](https://github.com/jorger3301/SolFace/actions/workflows/ci.yml/badge.svg)](https://github.com/jorger3301/SolFace/actions/workflows/ci.yml)
 
 **Deterministic wallet avatars and names for the Solana ecosystem.**
 
@@ -56,7 +56,7 @@ npm install solfaces
 
 ```bash
 # Zero dependencies — just copy the file
-curl -O https://raw.githubusercontent.com/jorger3301/solfaces/main/python/solfaces.py
+curl -O https://raw.githubusercontent.com/jorger3301/SolFace/main/python/solfaces.py
 ```
 
 ---

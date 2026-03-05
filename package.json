@@ -6,9 +6,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jorger3301/solfaces.git"
+    "url": "git+https://github.com/jorger3301/SolFace.git"
   },
-  "homepage": "https://github.com/jorger3301/SolFaces#readme",
+  "homepage": "https://github.com/jorger3301/SolFace#readme",
   "keywords": [
     "solana",
     "avatar",

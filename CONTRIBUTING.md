@@ -4,8 +4,8 @@
 
 1. Clone the repo and install dependencies:
    ```bash
-   git clone https://github.com/jorger3301/SolFaces.git
-   cd SolFaces
+   git clone https://github.com/jorger3301/SolFace.git
+   cd SolFace
    npm install
    ```
 

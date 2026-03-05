@@ -93,7 +93,7 @@ npm install solfaces
 <script src="https://unpkg.com/solfaces/dist/solfaces.cdn.global.js"></script>
 ```
 ```bash
-curl -O https://raw.githubusercontent.com/jorger3301/solfaces/main/python/solfaces.py
+curl -O https://raw.githubusercontent.com/jorger3301/SolFace/main/python/solfaces.py
 ```
 
 ---
