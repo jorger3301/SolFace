@@ -41,9 +41,9 @@ All fields optional. Only override what you need.
 ```ts
 const brandTheme: SolFaceTheme = {
   skinColors: ["#fce4d4", "#f5d0b0", "#e8b88a", "#d4956a", "#b5724a", "#8d5524", "#6b3f1d", "#4a2c17", "#3a1f10", "#2a1008"],
-  eyeColors: ["#333", "#4a80c4", "#5a9a5a", "#c89430", "#8a8a8a"],
+  eyeColors: ["#382414", "#3868A8", "#38784C", "#808838", "#586878", "#A06830", "#685898", "#889898"],
   hairColors: ["#1a1a1a", "#4a3728", "#8b6b4a", "#c44a20", "#d4a844", "#6090e0", "#14F195", "#e040c0", "#ff6b6b", "#4ecdc4"],
-  bgColors: ["#14F195", "#4a90e2", "#9945FF", "#f0e68c", "#e06070", "#ff8c42", "#5bc0be", "#8338ec", "#ff006e", "#3a86ff"],
+  bgColors: ["#b98387", "#a9a360", "#9eb785", "#69ab79", "#81bbb0", "#6499af", "#7f8bbd", "#8869ab", "#b785b3", "#ab6984", "#a07ab5", "#74b5a0"],
   mouthColor: "#e06070",
   eyebrowColor: "#aaa",
   accessoryColor: "#888",
@@ -64,9 +64,9 @@ const brandTheme: SolFaceTheme = {
 | Field | Type | Controls |
 |-------|------|---------|
 | `skinColors` | `string[]` | 10 skin tone colors |
-| `eyeColors` | `string[]` | 5 iris/pupil colors |
-| `hairColors` | `string[]` | 10 hair fill colors |
-| `bgColors` | `string[]` | 10 background fill colors |
+| `eyeColors` | `string[]` | 8 iris/pupil colors |
+| `hairColors` | `string[]` | 10 hair/headband derivation colors |
+| `bgColors` | `string[]` | 12 background fill colors |
 
 ### Individual color overrides
 

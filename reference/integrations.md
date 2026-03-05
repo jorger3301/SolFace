@@ -169,8 +169,8 @@ Templates included for **Telegram (grammy)** and **Discord (discord.js)**. Full 
 
 | Function | Returns | Description |
 |----------|---------|-------------|
-| `deriveName(wallet, format?)` | `string` | Deterministic name from wallet (SHA-256) |
-| `deriveIdentity(wallet)` | `SolNameIdentity` | Full identity bundle from wallet |
+| `deriveName(wallet, format?, options?)` | `string` | Deterministic name from wallet (SHA-256) |
+| `deriveIdentity(wallet, options?)` | `SolNameIdentity` | Full identity bundle from wallet |
 | `generateTraits(wallet, overrides?)` | `SolFaceTraits` | Deterministic traits from wallet |
 | `getTraitLabels(traits)` | `Record<string, string>` | Human-readable trait names |
 | `traitHash(wallet)` | `string` | 8-char hex hash |
@@ -184,6 +184,11 @@ Templates included for **Telegram (grammy)** and **Discord (discord.js)**. Full 
 | `describeTraits(traits, options?)` | `string` | Describe from pre-generated traits |
 | `agentAppearancePrompt(wallet, name?)` | `string` | System prompt for AI agents |
 | `solFaceAltText(wallet)` | `string` | Accessible alt text |
+| `resolveTheme(name?, themes?)` | `SolFaceTheme \| undefined` | Look up theme by name from a map |
+| `mergeTheme(base, overrides)` | `SolFaceTheme` | Merge two themes |
+| `effectiveAccessory(traits)` | `number` | Resolved accessory index (0–11) |
+| `SOLFACE_TOOLS` | `SolFaceTool[]` | All 6 agent tool definitions |
+| `handleToolCall(name, params)` | `unknown` | Universal agent tool dispatcher |
 
 ### Color Math Utilities
 
@@ -195,6 +200,7 @@ Templates included for **Telegram (grammy)** and **Discord (discord.js)**. Full 
 | `lighten(hex, pct)` | `string` | Lighten a color |
 | `blend(a, b, t)` | `string` | Blend two colors |
 | `luminance(hex)` | `number` | Perceived luminance (0-255) |
+| `contrastRatio(hex1, hex2)` | `number` | WCAG contrast ratio between two colors |
 | `deriveSkinColors(skinHex)` | `DerivedColors` | Full skin-luminance color derivation |
 
 ---
@@ -205,7 +211,7 @@ Templates included for **Telegram (grammy)** and **Discord (discord.js)**. Full 
 import { solFaceAltText } from "solfaces";
 
 const alt = solFaceAltText("7xKXtg...");
-// → "SolFace avatar: squircle face, warm golden skin, hazel almond eyes, ..."
+// → "SolFace avatar: squircle face, fair skin, blue side-looking eyes, bald, ..."
 ```
 
 The `<SolFace>` React component includes `role="img"` and an auto-generated `aria-label` by default.

@@ -13,9 +13,9 @@ Every Solana wallet address generates a unique, consistent face and a determinis
 
 Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet needs a visual identity.
 
-![SolFaces theme showcase showing Default, Light, Dark, and Mono rendering modes](assets/solfaces-themes-labeled.png)
+![SolFaces theme showcase showing Default, Dark, Light, Mono, Flat, and Transparent rendering modes](assets/solfaces-themes-labeled.png)
 
-*Default, Light, Dark, and Mono — four of the 11 built-in themes. Each row shows the same 10 wallets rendered in a different theme.*
+*Default, Dark, Light, Mono, Flat, and Transparent — six universal themes that work in all renderers. Glass and Pixel themes also available (React only).*
 
 ---
 
@@ -26,7 +26,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 - **~53M unique avatars** — 10 visual traits deterministically sampled = massive combination space.
 - **SolNames** — Every wallet gets a deterministic, human-friendly name derived via SHA-256 (e.g. "Sunny Icon"). ~1M display names, ~65.5B unique tags.
 - **11 built-in themes** — Default, Dark, Light, Mono, Flat, Transparent, plus 3 Pixel and 2 Glass themes (React).
-- **Gradient-rich rendering** — Skin-luminance-driven colors, specular highlights, cheek blush, gradient hair, glow overlays.
+- **Gradient-rich rendering** — Skin-luminance-driven colors, specular highlights, cheek blush, face glow overlays.
 - **Works everywhere** — React, vanilla JS, Node, Python, CDN script tag, edge functions.
 - **Flat mode** — Disable all gradients for simplified rendering.
 - **Detail levels** — Full detail (gradients, specular, cheeks) at size >= 48, simplified below.
@@ -351,10 +351,10 @@ No registration, no storage, no API calls. Just math from the wallet address. Ev
 import { agentAppearancePrompt } from "solfaces";
 
 const appearance = agentAppearancePrompt("7xKXqR...", "Atlas");
-// → "My visual identity is a SolFace avatar (ID: a3f2b1c0) derived from
-//    my wallet address. I'm Atlas. I have a squircle face with warm golden skin,
-//    almond-shaped hazel eyes, natural eyebrows, and am bald.
-//    I'm wearing aviator sunglasses. I have a playful grin.
+// → "My visual identity is a SolFace avatar (ID: 1a74f104) derived from
+//    my wallet address. I'm Atlas. I have a squircle face with fair skin,
+//    side-looking, shifted blue eyes, natural eyebrows, and am bald.
+//    I'm wearing a dangling earring. I have a soft pout.
 //    This appearance is deterministic — anyone who looks up my wallet will
 //    see the same face."
 
@@ -374,11 +374,11 @@ describeAppearance("7xKXqR...", { format: "paragraph", perspective: "first", nam
 
 // Structured (for data display)
 describeAppearance("7xKXqR...", { format: "structured" });
-// → "Face: squircle\nSkin: warm golden\nEyes: almond-shaped, hazel\n..."
+// → "Face: squircle\nSkin: fair\nEyes: side-looking, shifted, blue\n..."
 
 // Compact (for alt text, captions)
 describeAppearance("7xKXqR...", { format: "compact" });
-// → "squircle face, warm golden skin, hazel almond eyes, wavy auburn hair, aviator sunglasses, grinning"
+// → "squircle face, fair skin, blue side-looking, shifted eyes, bald, a dangling earring, soft pout"
 ```
 
 ### Alt Text & Accessibility
@@ -387,7 +387,7 @@ describeAppearance("7xKXqR...", { format: "compact" });
 import { solFaceAltText } from "solfaces";
 
 const alt = solFaceAltText("7xKXqR...");
-// → "SolFace avatar: squircle face, warm golden skin, hazel almond eyes, ..."
+// → "SolFace avatar: squircle face, fair skin, blue side-looking eyes, bald, ..."
 ```
 
 ### Python (AI Agent Backends)
@@ -483,9 +483,9 @@ import type { SolFaceTheme } from "solfaces";
 const myTheme: SolFaceTheme = {
   // Color palettes (arrays — one color per trait variant)
   skinColors: ["#fce4d4", "#f5d0b0", "#e8b88a", "#d4956a", "#b5724a", "#8d5524", "#6b3f1d", "#4a2c17", "#3a1f10", "#2a1008"],
-  eyeColors: ["#333", "#4a80c4", "#5a9a5a", "#c89430", "#8a8a8a"],
+  eyeColors: ["#382414", "#3868A8", "#38784C", "#808838", "#586878", "#A06830", "#685898", "#889898"],
   hairColors: ["#1a1a1a", "#4a3728", "#8b6b4a", "#c44a20", "#d4a844", "#6090e0", "#14F195", "#e040c0", "#ff6b6b", "#4ecdc4"],
-  bgColors: ["#14F195", "#4a90e2", "#9945FF", "#f0e68c", "#e06070", "#ff8c42", "#5bc0be", "#8338ec", "#ff006e", "#3a86ff"],
+  bgColors: ["#b98387", "#a9a360", "#9eb785", "#69ab79", "#81bbb0", "#6499af", "#7f8bbd", "#8869ab", "#b785b3", "#ab6984", "#a07ab5", "#74b5a0"],
 
   // Individual color overrides
   mouthColor: "#e06070",
@@ -532,9 +532,9 @@ const myTheme = getPresetTheme("dark", {
 | Field | Type | What it controls |
 |-------|------|-----------------|
 | `skinColors` | `string[]` | 10 skin tone colors |
-| `eyeColors` | `string[]` | 5 iris/pupil colors |
-| `hairColors` | `string[]` | 10 hair fill colors |
-| `bgColors` | `string[]` | 10 background fill colors |
+| `eyeColors` | `string[]` | 8 iris/pupil colors |
+| `hairColors` | `string[]` | 10 hair/headband derivation colors |
+| `bgColors` | `string[]` | 12 background fill colors |
 
 **Individual color overrides:**
 
@@ -778,6 +778,7 @@ For sites without a build step — Webflow, Notion embeds, plain HTML, WordPress
 | `lighten(hex, pct)` | `string` | Lighten a color |
 | `blend(a, b, t)` | `string` | Blend two colors |
 | `luminance(hex)` | `number` | Perceived luminance (0-255) |
+| `contrastRatio(hex1, hex2)` | `number` | WCAG contrast ratio between two colors |
 | `deriveSkinColors(skinHex)` | `DerivedColors` | Full skin-luminance color derivation |
 | `SOLFACE_TOOLS` | `SolFaceTool[]` | All 6 agent tool definitions |
 | `handleToolCall(name, params)` | `unknown` | Universal agent tool dispatcher |
@@ -946,7 +947,7 @@ v2.0.0 is a breaking release:
 
 - **All faces change.** Trait ranges expanded (skin 6→10, mouth 6→8, hair 10, accessories 6→12, bg 5→12, eyes 8→9), so every wallet generates a different face than in v1. Hair is sampled but no longer rendered (all faces are bald).
 - **Old themes removed.** `solana`, `neon`, `jupiter`, `phantom`, `circle` themes are gone. Use `dark`, `light`, `mono`, `flat`, `transparent`, or the new `glass`/`pixel` themes.
-- **New rendering engine.** Gradient-rich rendering with skin-luminance-driven colors, ears, hair-back layers, and face overlays.
+- **New rendering engine.** Gradient-rich rendering with skin-luminance-driven colors, ears, and face overlays.
 - **New theme fields.** `flat`, `cheekEnabled`, `shadowEnabled`, `glowIntensity`, and React-only `_glass*`/`_pixel*` fields.
 - **`colorOverrides` still supported.** Per-instance color overrides work the same as v1.
 
