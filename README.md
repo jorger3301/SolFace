@@ -1,4 +1,4 @@
-# SolFaces
+# SolFace
 
 [![npm version](https://img.shields.io/npm/v/solfaces)](https://www.npmjs.com/package/solfaces)
 [![npm downloads](https://img.shields.io/npm/dw/solfaces)](https://www.npmjs.com/package/solfaces)
@@ -19,7 +19,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 
 ---
 
-## Why SolFaces?
+## Why SolFace?
 
 - **Deterministic** — Same wallet address always produces a unique avatar and name. No database needed.
 - **Zero dependencies** — Core engine has no runtime dependencies.
@@ -32,7 +32,7 @@ Built for dApps, AI agents, social features, leaderboards, and anywhere a wallet
 - **Detail levels** — Full detail (gradients, specular, cheeks) at size >= 48, simplified below.
 - **Fully customizable** — Every visual element is customizable: 4 color palettes, 8 individual color overrides, 9 per-instance color keys, rendering toggles, layout controls, blink timing, and 30+ React-only pixel/glass fields. No visual element is locked — if you can see it, you can theme it.
 - **Eliminates dead space** — No more blank avatars or generic placeholders. Every wallet gets a unique face instantly.
-- **AI-agent ready** — AI trading bots and autonomous agents are becoming on-chain users. SolFaces gives every agent a recognizable face and a natural language self-description for system prompts and bios.
+- **AI-agent ready** — AI trading bots and autonomous agents are becoming on-chain users. SolFace gives every agent a recognizable face and a natural language self-description for system prompts and bios.
 - **PNG rasterization** — Serve real image files for bots, Discord, Telegram, OG images.
 - **SSR-ready** — String renderer works server-side with zero browser APIs.
 
